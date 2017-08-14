@@ -6,7 +6,7 @@
   
     <script type="text/javascript">  
     
-        var url = 'ws://' + window.location.host + '/floodgateControl/websocket?type=zl';  
+        var url = 'ws://' + window.location.host + '/floodgateControl/websocket.mvc?type=zl';  
         var ws;
         function connect() {  
         	
@@ -31,7 +31,7 @@
             }  
         }  
         
-        var url1 = 'ws://' + window.location.host + '/floodgateControl/websocket?type=zl2';  
+        var url1 = 'ws://' + window.location.host + '/floodgateControl/websocket.mvc?type=zl2';  
         var ws1;
         function connect1() {  
         	
