@@ -11,10 +11,10 @@ import com.thtf.yhdd.entity.YhddEntity;
 import com.thtf.yhdd.service.YhddService;
 
 @Controller
-@RequestMapping("/directController")
+@RequestMapping("/yhddController")
 public class YhddController extends BaseController<YhddEntity>{
 
-	@Resource(name="directService")
+	@Resource(name="yhddService")
 	private YhddService<YhddEntity> yhddService;
 	
 	@Override

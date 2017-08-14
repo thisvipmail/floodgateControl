@@ -14,12 +14,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.thtf.base.controller.BaseController;
 import com.thtf.base.service.BaseService;
-import com.thtf.direct.entity.DirectEntity;
 import com.thtf.waterflow.entity.WfsumEntity;
 import com.thtf.waterflow.service.WfsumService;
 
 @Controller
-@RequestMapping("/directController")
+@RequestMapping("/wfsumController")
 public class WfsumController extends BaseController<WfsumEntity>{
 
 	@Resource(name="wfsumService")

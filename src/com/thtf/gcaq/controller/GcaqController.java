@@ -43,8 +43,8 @@ public class GcaqController extends BaseController<OriginalDataBase>{
 	@Resource(name="jmService")
 	private JointmeterServiceImpl<Jointmeter> jmService;
 	
-	@Resource(name="dpService")
-	private SoilPressServiceImpl<SoilPresses> dpService;
+	@Resource(name="spService")
+	private SoilPressServiceImpl<SoilPresses> spService;
 	
 	@Override
 	public BaseService<OriginalDataBase> getBaseService() {
@@ -66,7 +66,7 @@ public class GcaqController extends BaseController<OriginalDataBase>{
 		List<DisplaceGage> dgList = dgService.query(map);
 		List<Osmometer> osList = osService.query(map);
 		List<Jointmeter> jmList = jmService.query(map);
-		List<SoilPresses> dpList = dpService.query(map);
+		List<SoilPresses> dpList = spService.query(map);
 		
 		List<GcaqEntity> list = new ArrayList<GcaqEntity>();
 		
