@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>工作台（工程）</title>
+    <style>
+        .div-height{
+            height: calc(100vh - 110px - 45px);
+            padding: 0px;
+            overflow-y: scroll;
+            overflow-x: hidden;
+        }
+        .div-height-2{
+            height: calc((100vh - 110px - 130px) / 2);
+            /*overflow-y: scroll;*/
+        }
+        @media (min-height: 1080px) {
+
+        }
+        .col-lg-5 {
+            width: 40%;
+        }
+        .col-lg-2{
+            width: 20%;
+        }
+    </style>
+    <script type="text/x-template" id="pagePanelTemplate">
+        <div>
+            <div class="panel panel-primary" style="margin-bottom: 0px;">
+                <div class="panel-heading">
+                    {{data.name}}
+                </div>
+                <div class="div-height-2">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>仪器名称</th>
+                            <th>数据时间</th>
+                            <th>{{getColXName(data.code)}}</th>
+                            <th>{{getColYName(data.code)}}</th>
+                            <th>{{getColZName(data.code)}}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(item, index) in data.itemData" v-if="Math.floor(index/6)===page-1">
+                            <td>{{++index}}</td>
+                            <td>{{item.name}}</td>
+                            <td>{{item.time}}</td>
+                            <td>{{item.valuex}}</td>
+                            <td>{{item.valuey}}</td>
+                            <td>{{item.valuez}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="text-center">
+                <span class="badge" v-on:click="page=1">1</span>
+                <span class="badge" v-on:click="page=2" v-if="data.itemData.length>6">2</span>
+                <span class="badge" v-on:click="page=3" v-if="data.itemData.length>12">3</span>
+                <span class="badge" v-on:click="page=4" v-if="data.itemData.length>18">4</span>
+            </div>
+        </div>
+    </script>
+    <script>
+        var app = new Vue({
+            el:'#div-gcaq',
+            data:{
+                datas:[
+                    {
+                        name:'位移计',
+                        code:'wyj',
+                        itemData:[
+                            {
+                                name:'位移计A',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'位移计B',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'位移计C',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'位移计D',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'位移计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'位移计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'位移计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'位移计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'位移计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'位移计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            }
+                        ]
+                    },
+                    {
+                        name:'测缝计',
+                        code:'cfj',
+                        itemData:[
+                            {
+                                name:'渗压计A',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'侧缝计B',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'侧缝计C',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'侧缝计D',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'侧缝计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'侧缝计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'侧缝计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'侧缝计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'侧缝计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'侧缝计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            }
+                        ]
+                    },
+                    {
+                        name:'土压力计',
+                        code:'tylj',
+                        itemData:[
+                            {
+                                name:'土压力计A',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'土压力计B',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'土压力计C',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'土压力计D',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'土压力计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'土压力计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'土压力计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'土压力计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'土压力计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'土压力计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            }
+                        ]
+                    },
+                    {
+                        name:'渗压计',
+                        code:'syj',
+                        itemData:[
+                            {
+                                name:'渗压计A',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'渗压计B',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'渗压计C',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'渗压计D',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'渗压计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'渗压计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'渗压计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'渗压计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'渗压计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            },{
+                                name:'渗压计E',
+                                time:new Date().toLocaleString(),
+                                valuex:'12',
+                                valuey:'12',
+                                valuez:'12'
+                            }
+                        ]
+                    }
+                ]
+            },
+            components:{
+                'panelpages':{
+                    template: '#pagePanelTemplate',
+                    props:['data'],
+                    data:function(){
+                        return {
+                            page:1
+                        };
+                    },
+                    methods:{
+                        getColXName:function(val){
+                            let xname = "";
+                            switch(val){
+                                case "wyj":
+                                    xname = "x向(㎜)";
+                                    break;
+                                default:
+                                    xname = "频率(KHz²)";
+                            }
+                            return xname;
+                        },
+                        getColYName:function(val){
+                            let yname = "";
+                            switch(val){
+                                case "wyj":
+                                    yname = "y向(㎜)";
+                                    break;
+                                default:
+                                    yname = "温度(℃)";
+                            }
+                            return yname;
+                        },
+                        getColZName:function(val){
+                            let zname = "";
+                            switch(val){
+                                case "wyj":
+                                    zname = "z向(㎜)";
+                                    break;
+                                case "cfj":
+                                    zname = "变形量(㎜)";
+                                    break;
+                                case "tylj":
+                                    zname = "土压力量(Kpa)";
+                                    break;
+                                case "syj":
+                                    zname = "水压力量(Kpa)";
+                                    break;
+                            }
+                            return zname;
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</head>
+<body>
+    <div id="div-gcaq" class="row">
+        <div class="col-lg-2 visible-lg" style="padding-right: 0px">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    查询选择树
+                </div>
+                <div id="treeDiv" class="panel-body div-height">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5 col-sm-6 col-xs-12" v-for="data in datas" style="padding-left: 0px">
+            <!--<div class="panel panel-primary" style="margin-bottom: 0px;">
+                <div class="panel-heading">
+                    {{data.name}}
+                </div>
+                <div class="div-height-2">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>仪器名称</th>
+                            <th>数据时间</th>
+                            <th>{{getColXName(data.code)}}</th>
+                            <th>{{getColYName(data.code)}}</th>
+                            <th>{{getColZName(data.code)}}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(item, index) in data.itemData" v-if="Math.floor(index/6)===page-1">
+                            <td>{{++index}}</td>
+                            <td>{{item.name}}</td>
+                            <td>{{item.time}}</td>
+                            <td>{{item.valuex}}</td>
+                            <td>{{item.valuey}}</td>
+                            <td>{{item.valuez}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="text-center">
+                <span class="badge" v-on:click="page=1">1</span>
+                <span class="badge" v-on:click="page=2" v-if="data.itemData.length>6">2</span>
+                <span class="badge" v-on:click="page=3" v-if="data.itemData.length>12">3</span>
+                <span class="badge" v-on:click="page=4" v-if="data.itemData.length>18">4</span>
+            </div>-->
+            <panelPages v-bind:data="data">
+
+            </panelPages>
+        </div>
+    </div>
+<script type="text/javascript">
+    $(function(){
+        $("#treeDiv").load("component/tree.html",function(){
+            loadTree("json/tree.json",function(node){
+                console.log(node);
+            });
+        });
+    });
+
+
+</script>
+</body>
+</html>

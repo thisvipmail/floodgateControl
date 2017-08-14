@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>月用水计划</title>
+</head>
+<body style="height: 100%; position:absolute;left: 0px;right: 0px;">
+<iframe id="frame" v-bind:src="url" frameborder="0" width="100%" v-bind:height="height"></iframe>
+</body>
+<script>
+    new Vue({
+        el:"#frame",
+        data:{
+            url:data.ysjh + data.report_m + "&p_year=" + util.getYear() + "&p_month=" + util.getMonth() + "&p_status=03",
+            height:document.body.scrollHeight - 120 + "px"
+        }
+    })
+    util.showWaiting();
+    document.getElementById("frame").onload = function(){
+        util.hideWaiting();
+    }
+</script>
+</html>

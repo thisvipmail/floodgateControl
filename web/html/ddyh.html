@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>调度优化</title>
+    <style>
+        .div-height {
+            height: calc(100vh - 110px - 45px);
+            padding: 0px;
+            overflow-y: scroll;
+            overflow-x: hidden;
+        }
+
+        @media (min-height: 798px) {
+            .div-height {
+                overflow-y: hidden;
+            }
+        }
+
+        .div-height-2 {
+            height: calc(100vh - 110px - 85px);
+            /*overflow-y: hidden;*/
+        }
+
+        .titleBtn {
+            /* color: #fff;*/
+            padding-top: 0px;
+            padding-bottom: 0px;
+            border: 0px;
+        }
+
+        th {
+            padding-left: 0px !important;
+            padding-right: 0px !important;
+        }
+
+        .text-right {
+            top: 5px;
+            padding-right: 0px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+<div class="row">
+    <div class="col-lg-2 visible-lg" style="padding-right: 0px">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                查询选择列表
+            </div>
+            <div id="treeDiv" class="panel-body div-height" style="overflow-y: hidden">
+
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-10 col-md-12" style="padding-left: 0px">
+        <div id="vueDiv" class="panel panel-default" style="margin-bottom: 0px;">
+            <div class="panel-heading">
+                <a class="btn btn-link titleBtn" onclick="save()">增加</a>
+                <a class="btn btn-link titleBtn" onclick="change()">修改</a>
+                <a class="btn btn-link titleBtn" onclick="remove()">删除</a>
+                <a class="btn btn-link pull-right titleBtn" onclick="ddyh()">优化分析</a>
+            </div>
+            <div class="div-height div-height-2">
+                <table class="table table-striped table-bordered text-center" style="margin: 0px">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th style="display: none">ID</th>
+                        <th>名称</th>
+                        <th>目标流量
+                            <small>(m³/s)</small>
+                        </th>
+                        <th>上游水位
+                            <small>(m)</small>
+                        </th>
+                        <th>下游水位
+                            <small>(m)</small>
+                        </th>
+                        <th>机组开启台数</th>
+                        <th>1#叶片角度</th>
+                        <th>2#叶片角度</th>
+                        <th>3#叶片角度</th>
+                        <th>4#叶片角度</th>
+                        <th>5#叶片角度</th>
+                        <th>电量单价
+                            <small>(元)</small>
+                        </th>
+                        <th>运行时长
+                            <small>(小时)</small>
+                        </th>
+                        <th>预计电费
+                            <small>(元)</small>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(item, index) in yhData">
+                        <td>{{++index+page*15}}</td>
+                        <td style="display: none">{{item.pumpId}}</td>
+                        <td>{{getName(item.pumpId)}}</td>
+                        <td>{{item.flow}}</td>
+                        <td>{{item.waterLevel1}}</td>
+                        <td>{{item.waterLevel2}}</td>
+                        <td>{{item.nums}}</td>
+                        <td>{{item.angle1}}</td>
+                        <td>{{item.angle2}}</td>
+                        <td>{{item.angle3}}</td>
+                        <td>{{item.angle4}}</td>
+                        <td>{{item.angle5}}</td>
+                        <td>{{item.price}}</td>
+                        <td>{{item.long}}</td>
+                        <td>{{item.total}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="page" class="m-pagination" style="margin: 0px"></div>
+    </div>
+</div>
+<div class="modal fade" id="modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{title}}</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="name" class="col-sm-2 control-label">名称</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="name" placeholder="名称" v-bind:value="item.name">
+                        </div>
+                        <label for="flow" class="col-sm-2 control-label">目标流量(m³/s)</label>
+
+                        <div class="col-sm-4">
+                            <input type="number" class="form-control" id="flow" placeholder="目标流量(m³/s)"
+                                   v-bind:value="item.flow">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="waterLevel1" class="col-sm-2 control-label">上游水位(m)</label>
+
+                        <div class="col-sm-4">
+                            <input type="number" class="form-control" id="waterLevel1" placeholder="上游水位(m)"
+                                   v-bind:value="item.waterLevel1">
+                        </div>
+                        <label for="waterLevel2" class="col-sm-2 control-label">下游水位(m)</label>
+
+                        <div class="col-sm-4">
+                            <input type="number" class="form-control" id="waterLevel2" placeholder="下游水位(m)"
+                                   v-bind:value="item.waterLevel2">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="nums" class="col-sm-2 control-label">机组开启台数</label>
+
+                        <div class="col-sm-4">
+                            <input type="number" class="form-control" id="nums" placeholder="机组开启台数"
+                                   v-bind:value="item.nums">
+                        </div>
+                        <label for="angle1" class="col-sm-2 control-label">1#叶片角度(°)</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="angle1" placeholder="1#叶片角度(°)"
+                                   v-bind:value="item.angle1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="angle2" class="col-sm-2 control-label">2#叶片角度(°)</label>
+
+                        <div class="col-sm-4">
+                            <input type="number" class="form-control" id="angle2" placeholder="2#叶片角度(°)"
+                                   v-bind:value="item.angle2">
+                        </div>
+                        <label for="angle3" class="col-sm-2 control-label">3#叶片角度(°)</label>
+
+                        <div class="col-sm-4">
+                            <input type="number" class="form-control" id="angle3" placeholder="3#叶片角度(°)"
+                                   v-bind:value="item.angle3">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="angle4" class="col-sm-2 control-label">4#叶片角度(°)</label>
+
+                        <div class="col-sm-4">
+                            <input type="number" class="form-control" id="angle4" placeholder="4#叶片角度(°)"
+                                   v-bind:value="item.angle4">
+                        </div>
+                        <label for="angle5" class="col-sm-2 control-label">5#叶片角度(°)</label>
+
+                        <div class="col-sm-4">
+                            <input type="number" class="form-control" id="angle5" placeholder="5#叶片角度(°)"
+                                   v-bind:value="item.angle5">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="price" class="col-sm-2 control-label">电量单价(元)</label>
+
+                        <div class="col-sm-4">
+                            <input type="number" class="form-control" id="price" placeholder="电量单价(元)"
+                                   v-bind:value="item.price">
+                        </div>
+                        <label for="long" class="col-sm-2 control-label">运行时长(小时)</label>
+
+                        <div class="col-sm-4">
+                            <input type="number" class="form-control" id="long" placeholder="运行时长(小时)"
+                                   v-bind:value="item.long">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="total" class="col-sm-2 control-label">预计电费(元)</label>
+
+                        <div class="col-sm-4">
+                            <input type="number" class="form-control" id="total" placeholder="预计电费(元)"
+                                   v-bind:value="item.total">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fxModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">优化分析</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label text-right">名称</label>
+
+                        <div class="col-sm-4">
+                            <!--<input type="text" class="form-control" id="pump" v-bind:value="query.pump">-->
+                            <select multiple class="selectpicker dropdown"
+                                    :data-actions-box="actionBox" :data-size="dataSize"
+                                    :data-selected-text-format="selectFormat" v-model="query.pump">
+                                <option v-for="data in pumpData" v-bind:id="data.id" v-bind:value="data.id">
+                                    {{ data.text }}
+                                </option>
+                            </select>
+                        </div>
+                        <label class="col-sm-2 control-label text-right">目标流量</label>
+                        <div class="col-sm-4">
+                            <!--<input type="number" class="form-control" id="flowq" v-bind:value="query.flow">-->
+                            <!--<label v-for="item in flowRadio">
+                                <input type="radio" name="optionsRadios" value="item"  v-model="query.flow">
+                                {{item}}
+                            </label>-->
+                            <select class="selectpicker dropdown" :data-size="dataSize"
+                                    :data-selected-text-format="selectFormat" v-model="query.flow">
+                                <option v-for="data in flowRadio" v-bind:value="data">
+                                    {{ data}}（m³/s）
+                                </option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-default" onclick="add()">增加</button>
+                    </div>
+                    <table class="table table-striped table-bordered text-center">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>名称</th>
+                            <th>目标流量
+                                <small>(m³/s)</small>
+                            </th>
+                            <th>上游水位
+                                <small>(m)</small>
+                            </th>
+                            <th>下游水位
+                                <small>(m)</small>
+                            </th>
+                            <th>机组开启台数</th>
+                            <th>1#叶片角度</th>
+                            <th>2#叶片角度</th>
+                            <th>3#叶片角度</th>
+                            <th>4#叶片角度</th>
+                            <th>5#叶片角度</th>
+                            <th>电量单价
+                                <small>(元)</small>
+                            </th>
+                            <th>运行时长
+                                <small>(小时)</small>
+                            </th>
+                            <th>预计电费
+                                <small>(元)</small>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(item, index) in queryList">
+                            <td>{{++index}}</td>
+                            <td>{{getName(item.pumpId)}}</td>
+                            <td>{{item.flow}}</td>
+                            <td>{{item.waterLevel1}}</td>
+                            <td>{{item.waterLevel2}}</td>
+                            <td>{{item.nums}}</td>
+                            <td>{{item.angle1}}</td>
+                            <td>{{item.angle2}}</td>
+                            <td>{{item.angle3}}</td>
+                            <td>{{item.angle4}}</td>
+                            <td>{{item.angle5}}</td>
+                            <td>{{item.price}}</td>
+                            <td>{{item.long}}</td>
+                            <td>{{item.total}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="myChart" style="width: 870px;height:600px;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+
+    /**
+     * 加载树形结构
+     */
+    let p1 = Promise.resolve(
+            $("#treeDiv").load("component/tree.html", function () {
+                loadTree("json/pumpTree.json", function (node) {
+                    $("#page").page("destroy");
+                    vue.yhData = initData(1, 15, node.id);
+                    pagination(15);
+                    vue.page = 0;
+                });
+            })
+    );
+    /**
+     * 获取泵站options
+     * @type {Array}
+     */
+    let p2 = Promise.resolve(
+            $.ajax({
+                url: "json/pumpTree.json",
+                type: "get",
+                async: false,
+                dataType: 'json'
+            })
+    );
+
+    /**
+     * 获取流量options
+     * @type {Array}
+     */
+    let p3 = Promise.resolve(
+            $.ajax({
+                url: "json/flowKind.json",
+                type: "get",
+                async: false,
+                dataType: 'json'
+            })
+    );
+
+    /**
+     * 需要从数据库获取数据
+     * 伪数据
+     */
+    let initData = function (page, nums, nodeId) {
+        return Array.apply({}, {length: nums}).map(function (_, index) {
+            return {
+                id: Math.random(),
+                pumpId: ['LRLN010012', 'LRLN010052', 'LRLN010095', 'LRLN030015', 'LRLN040012', 'LRLN040052', 'LRLN050012'].slice(index % 7, index % 7 + 1)[0],
+                flow: [80, 85, 90, 95, 100, 105, 110].slice(index % 7, index % 7 + 1)[0],
+                waterLevel1: Math.floor(Math.random() * 50),
+                waterLevel2: Math.floor(Math.random() * 50),
+                nums: Math.floor(Math.random() * 3),
+                angle1: Math.floor(Math.random() * 90),
+                angle2: Math.floor(Math.random() * 90),
+                angle3: Math.floor(Math.random() * 90),
+                angle4: Math.floor(Math.random() * 90),
+                angle5: Math.floor(Math.random() * 90),
+                price: (Math.random() * 10).toFixed(2),
+                long: Math.floor(Math.random() * 1000),
+                total: Math.floor(Math.random() * 10000)
+            }
+        });
+    };
+    let p4 = Promise.resolve(
+            initData(1, 15)
+    );
+
+    /**
+     * 分页
+     * @type {boolean}
+     */
+    let pagination = function (total) {
+        $("#page").page({
+            loadFirstPage: false,
+            total: total,
+            pageSize: 15,
+            firstBtnText: '首页',
+            lastBtnText: '尾页',
+            prevBtnText: '上一页',
+            nextBtnText: '下一页',
+            showInfo: true,
+            showJump: true,
+            jumpBtnText: '跳转',
+            infoFormat: '{start} ~ {end}条，共{total}条'
+        }).on("pageClicked", function (event, pageIndex) {
+            vue.yhData = initData(pageIndex + 1, 15);
+            vue.page = pageIndex;
+        }).on('jumpClicked', function (event, pageIndex) {
+            vue.yhData = initData(pageIndex + 1, 15);
+            vue.page = pageIndex;
+        });
+    };
+
+    let isPage = true, vue;
+    Promise.all([p1, p2, p3, p4]).then(function ([arg,pumpData,flowKind,data]) {
+        pagination(100);
+        vue = new Vue({
+            el: '#vueDiv',
+            data: {
+                yhData: data,
+                page: 0
+            },
+            methods: {
+                getName: function (id) {
+                    return pumpData.nodes.filter(function (currentValue, index, arr) {
+                        if (currentValue.id === id) {
+                            return currentValue
+                        }
+                    })[0].text;
+                }
+            }
+        });
+        trClick();
+    });
+    let json = {};
+    let trClick = function () {
+        let oldTr = "";
+        $('tbody tr').click(function () {
+            /* oldTr ? oldTr.attr("class","") : "";
+             $(this).attr("class","success");*/
+            $(oldTr).toggleClass("success");
+            $(this).toggleClass("success");
+            oldTr = $(this);
+            var tr = $(this).children();
+            for (var i = 1; i < tr.length; i++) {
+                json[jsonKey[i]] = tr.eq(i).text();
+            }
+        })
+    }
+    const jsonKey = [
+        'id', 'pumpId', 'name', 'flow', 'waterLevel1', 'waterLevel2', 'nums', 'angle1', 'angle2', 'angle3', 'angle4', 'angle5', 'price', 'long', 'total'
+    ];
+
+    let modalVue = new Vue({
+        el: "#modal",
+        data: {
+            title: "",
+            item: json
+        }
+    });
+
+    function save() {
+        if (json && !$.isEmptyObject(json)) {
+            modalVue.title = "复制一条数据";
+            console.log(json);
+            modalVue.item = {};
+            modalVue.item = json;
+        } else {
+            modalVue.title = "添加一条数据";
+        }
+        $('#modal').modal({backdrop: 'static', keyboard: false});
+    }
+    ;
+    function change() {
+        console.log(json);
+        if (json && !$.isEmptyObject(json)) {
+            modalVue.title = "修改一条数据";
+            modalVue.item = {};
+            modalVue.item = json;
+            $('#modal').modal({backdrop: 'static', keyboard: false});
+        } else {
+            swal("请选择一条记录");
+        }
+    }
+    ;
+    function remove() {
+        swal({
+                    title: "确认删除?",
+                    type: "error",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    cancelButtonText: "否",
+                    confirmButtonText: "是",
+                    closeOnConfirm: false
+                },
+                function () {
+                    swal("删除成功", "", "success");
+                }
+        );
+    }
+    ;
+
+</script>
+<!--<script>
+    function bootstrapTable(){
+        $('#tableContent').bootstrapTable({});
+        $('#tableContent').bootstrapTable( 'resetView' , {height: $(".div-height-2").height()} );
+        $(window).resize(function(){
+            $('#tableContent').bootstrapTable( 'resetView' , {height: $(".div-height-2").height()} );
+        });
+        $('#tableContent').on('click-row.bs.table', function (row,$element) {
+            console.log($element);
+        });
+    }
+</script>-->
+<script>
+    let app = "";
+    let queryFun = function () {
+        //伪数据，根据泵站和流量进行查询
+        return Array.apply({}, {length: app.query.pump.length}).map(function (_, index) {
+            return {
+                id: Math.random(),
+                pumpId: app.query.pump[index],
+                flow: app.query.flow,
+                waterLevel1: Math.floor(Math.random() * 50),
+                waterLevel2: Math.floor(Math.random() * 50),
+                nums: Math.floor(Math.random() * 3),
+                angle1: Math.floor(Math.random() * 90),
+                angle2: Math.floor(Math.random() * 90),
+                angle3: Math.floor(Math.random() * 90),
+                angle4: Math.floor(Math.random() * 90),
+                angle5: Math.floor(Math.random() * 90),
+                price: (Math.random() * 10).toFixed(2),
+                long: Math.floor(Math.random() * 1000),
+                total: Math.floor(Math.random() * 10000)
+            }
+        });
+    };
+
+    let myChart = null;
+    const colors = ['#5793f3', '#d14a61', '#CD8162', '#675bba', '#848484'];
+    let option = {
+        color: colors,
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross'
+            }
+        },
+        grid: {
+            right: '25%'
+        },
+        legend: {
+            data: ['机组台数', '运行时长', '用电费用', '上游水位', '下游水位', '上游设计水位', '下游设计水位']
+        },
+        xAxis: [
+            {
+                type: 'category',
+                axisTick: {
+                    alignWithLabel: true
+                },
+                data: []
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                name: '机组台数',
+                min: 0,
+                max: 5,
+                position: 'right',
+                axisLine: {
+                    lineStyle: {
+                        color: colors[0]
+                    }
+                },
+                axisLabel: {
+                    formatter: '{value} 台'
+                }
+            },
+            {
+                type: 'value',
+                name: '运行时长',
+                min: 0,
+                max: 1000,
+                position: 'right',
+                offset: 50,
+                axisLine: {
+                    lineStyle: {
+                        color: colors[1]
+                    }
+                },
+                axisLabel: {
+                    formatter: '{value} 小时'
+                }
+            },
+            {
+                type: 'value',
+                name: '用电费用',
+                min: 0,
+                max: 5000,
+                position: 'right',
+                offset: 110,
+                axisLine: {
+                    lineStyle: {
+                        color: colors[2]
+                    }
+                },
+                axisLabel: {
+                    formatter: '{value} 万元'
+                }
+            },
+            {
+                type: 'value',
+                name: '水位',
+                min: 0,
+                max: 50,
+                position: 'left',
+                axisLine: {
+                    lineStyle: {
+                        color: colors[3]
+                    }
+                },
+                axisLabel: {
+                    formatter: '{value} 米'
+                }
+            }
+        ],
+        series: [
+            {
+                name: '机组台数',
+                type: 'bar',
+                data: []
+            },
+            {
+                name: '运行时长',
+                type: 'bar',
+                yAxisIndex: 1,
+                data: []
+            },
+            {
+                name: '用电费用',
+                type: 'bar',
+                yAxisIndex: 2,
+                data: []
+            },
+            {
+                name: '上游水位',
+                type: 'line',
+                yAxisIndex: 3,
+                data: []
+            },
+            {
+                name: '下游水位',
+                type: 'line',
+                yAxisIndex: 3,
+                data: []
+            },
+            {
+                name: '上游设计水位',
+                type: 'line',
+                yAxisIndex: 3,
+                data: []
+            },
+            {
+                name: '下游设计水位',
+                type: 'line',
+                yAxisIndex: 3,
+                data: []
+            }
+        ]
+    };
+    let nullOptionData = function(){
+        option.series[0].data = [];
+        option.series[1].data = [];
+        option.series[2].data = [];
+        option.series[3].data = [];
+        option.series[4].data = [];
+        option.series[5].data = [];
+        option.series[6].data = [];
+        option.xAxis[0].data = [];
+    };
+    let initChart = function () {
+        let length = app.query.pump.length;
+        option.series[0].data = option.series[0].data.concat((function () {
+            let res = [];
+            let len = length;
+            while (len--) {
+                res.push((Math.random() * 5).toFixed(0) - 0);
+            }
+            return res;
+        })());
+        option.series[1].data = option.series[1].data.concat((function () {
+            var res = [];
+            let len = length;
+            while (len--) {
+                res.push(Math.round(Math.random() * 1000));
+            }
+            return res;
+        })());
+        option.series[2].data = option.series[2].data.concat((function () {
+            var res = [];
+            let len = length;
+            while (len--) {
+                res.push((Math.random() * 5000).toFixed(2) - 0);
+            }
+            return res;
+        })());
+        option.series[3].data = option.series[3].data.concat((function () {
+            var res = [];
+            let len = length;
+            while (len--) {
+                res.push((Math.random() * 50).toFixed(2) - 0);
+            }
+            return res;
+        })());
+        option.series[4].data = option.series[4].data.concat((function () {
+            var res = [];
+            let len = length;
+            while (len--) {
+                res.push((Math.random() * 50).toFixed(2) - 0);
+            }
+            return res;
+        })());
+        option.series[5].data = option.series[5].data.concat((function () {
+            var res = [];
+            let len = length;
+            while (len--) {
+                res.push((Math.random() * 50).toFixed(2) - 0);
+            }
+            return res;
+        })());
+        option.series[6].data = option.series[6].data.concat((function () {
+            var res = [];
+            let len = length;
+            while (len--) {
+                res.push((Math.random() * 50).toFixed(2) - 0);
+            }
+            return res;
+        })());
+        option.xAxis[0].data = option.xAxis[0].data.concat((function(){
+            return Array.apply({}, {length: app.query.pump.length}).map(function (_, index_) {
+                return app.pumpData.filter(function (currentValue, index, arr) {
+                    return currentValue.id === app.query.pump[index_];
+                })[0].text;
+            })
+        })());
+        myChart.setOption(option);
+    };
+    function add() {
+        app.queryList = app.queryList.concat(queryFun());
+        initChart();
+        disabledOption();
+        app.query.pump = [];
+    };
+    let disabledOption = function(){
+        app.query.pump.forEach(function(item, index){
+            $('.selectpicker').find('[value='+item+']').attr('disabled',true);
+        });
+        $('.selectpicker').selectpicker('refresh');
+        $('.selectpicker').selectpicker("deselectAll");
+    };
+    let p2 = Promise.resolve(
+            $.ajax({
+                url: "json/pumpTree.json",
+                type: "get",
+                async: false,
+                dataType: 'json'
+            })
+    );
+    let initOption = function () {
+        $(".selectpicker").find("option:disabled").each(function (index, item) {
+            $(item).attr('disabled',false);
+        })
+        //$('.selectpicker').selectpicker('refresh');
+    }
+    function ddyh() {
+        p2.then(function (pumpData) {
+            if(!app){
+                app = new Vue({
+                    el: "#fxModal",
+                    data: {
+                        query: {
+                            pump: [],
+                            flow: 60
+                        },
+                        pumpData:pumpData.nodes,
+                        flowRadio:[60,65,70,75,80,85,90,95,100,105,110,120],
+                        queryList: [],
+                        actionBox:true,
+                        dataSize:5,
+                        selectFormat:"count > 3"
+                    },
+                    methods: {
+                        getName: function (id) {
+                            return pumpData.nodes.filter(function (currentValue, index, arr) {
+                                if (currentValue.id === id) {
+                                    return currentValue
+                                }
+                            })[0].text;
+                        }
+                    }
+                });
+            }else {
+                initOption();
+                app.queryList = [];
+                nullOptionData();
+                myChart.dispose();
+            }
+            $('.selectpicker').selectpicker("refresh");
+            $('#fxModal').modal({backdrop: 'static', keyboard: false});
+            myChart = echarts.init(document.getElementById('myChart'));
+        });
+
+        //$('#fxModal').modal({backdrop: 'static', keyboard: false});
+    }
+
+</script>
+</html>

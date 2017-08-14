@@ -1,0 +1,138 @@
+{
+  "fsk": [
+    {
+      "id": "KRJD010171",
+      "tokens":"spwfsz shangpenwangfenshuizha 上盆王分水闸",
+      "text": "上盆王分水闸"
+    },
+    {
+      "id": "KRJD060011",
+      "tokens":"dhskfsz donghushuikufenshuizha 东湖水库分水闸",
+      "text": "东湖水库分水闸"
+    },
+    {
+      "id": "KRJD030451",
+      "tokens":"hlgqfsz hulouganqufenshuizha 胡楼干渠分水闸",
+      "text": "胡楼干渠分水闸"
+    },
+    {
+      "id": "KRJD050011",
+      "tokens":"fjlfsz fanjialinfenshuizha 樊家林分水闸",
+      "text": "樊家林分水闸"
+    },
+    {
+      "id": "KRJD050051",
+      "tokens":"yhjzfsz yinhuangjizifenshuizha 引黄济淄分水闸",
+      "text": "引黄济淄分水闸"
+    },
+    {
+      "id": "KRJD050131",
+      "tokens":"dxgqfsz daoxuganqufenshuizha 道旭干渠分水闸",
+      "text": "道旭干渠分水闸"
+    },
+    {
+      "id": "KRJD050291",
+      "tokens":"bxfsz boxingfenshuizha 博兴分水闸",
+      "text": "博兴分水闸"
+    },
+    {
+      "id": "KRJD040133",
+      "tokens":"dyfsz dongyingfenshuizha 东营分水闸",
+      "text": "东营分水闸"
+    },
+    {
+      "id": "KRJD060171",
+      "tokens":"swcskfsz shuangwangchengshuikufenshuizha 双王城水库分水闸",
+      "text": "双王城水库分水闸"
+    },
+    {
+      "id": "KRLB020091",
+      "tokens":"ygsxfsz yanggushenxianfenshuizha 阳谷莘县分水闸",
+      "text": "阳谷莘县分水闸"
+    },
+    {
+      "id": "KRLB020171",
+      "tokens":"dcfqfsz dongchangfuqufenshuizha 东昌府区分水闸",
+      "text": "东昌府区分水闸"
+    },
+    {
+      "id": "KRLB020371",
+      "tokens":"lcfsz liaochengfenshuizha 聊城分水闸",
+      "text": "聊城分水闸"
+    },
+    {
+      "id": "KRLB030011",
+      "tokens":"lqfsz linqingfenshuizha 临清分水闸",
+      "text": "临清分水闸"
+    },
+    {
+      "id": "KRLB020591",
+      "tokens":"gtfsz gaotangfenshuizha 高唐分水闸",
+      "text": "高唐分水闸"
+    },
+    {
+      "id": "KRLB020541",
+      "tokens":"cpfsz chipingfenshuizha 茌平分水闸",
+      "text": "茌平分水闸"
+    },
+    {
+      "id": "KRLB020671",
+      "tokens":"gxfsz guanxianfenshuizha 冠县分水闸",
+      "text": "冠县分水闸"
+    }
+  ],
+  "qddm": [
+    {
+      "id": "LRLN010012",
+      "tokens":"tezbz taierzhuangbengzhan 台儿庄泵站",
+      "text": "台儿庄泵站"
+    },
+    {
+      "id": "LRLN010052",
+      "tokens":"wnzbz wannianzhabengzhan 万年闸泵站",
+      "text": "万年闸泵站"
+    },
+    {
+      "id": "LRLN010095",
+      "tokens":"hzbz hanzhuangbengzhan 韩庄泵站",
+      "text": "韩庄泵站"
+    },
+    {
+      "id": "LRLN030015",
+      "tokens":"ejbbz erjibabengzhan 二级坝泵站",
+      "text": "二级坝泵站"
+    },
+    {
+      "id": "LRLN040012",
+      "tokens":"dlbz dengloubengzhan 邓楼泵站",
+      "text": "邓楼泵站"
+    },
+    {
+      "id": "LRLN040052",
+      "tokens":"cgbz changgoubengzhan 长沟泵站",
+      "text": "长沟泵站"
+    },
+    {
+      "id": "LRLN050012",
+      "tokens":"blwbz baliwanbengzhan 八里湾泵站",
+      "text": "八里湾泵站"
+    }
+  ],
+  "skkr": [
+    {
+      "id": "BCG13S00014",
+      "tokens":"dtsk datunshuiku 大屯水库",
+      "text": "大屯水库"
+    },
+    {
+      "id": "BMC03000014",
+      "tokens":"dhsk donghushuiku 东湖水库",
+      "text": "东湖水库"
+    },
+    {
+      "id": "BMC08000014",
+      "tokens":"swcsk shuangwangchengshuiku 双王城水库",
+      "text": "双王城水库"
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<body>
+<select class="selectpicker">
+    <option>Mustard</option>
+    <option>Ketchup</option>
+    <option>Relish</option>
+</select>
+<div class="modal fade" id="waitModal">
+    <div class="modal-dialog"
+         style="position:absolute;left:45%;transform:translateX(-45%);top:45%;transform:translateY(-45%)">
+        <div class="modal-content" style="width: 158px">
+            <div class="modal-body">
+                <select class="selectpicker">
+                    <option>Mustard</option>
+                    <option>Ketchup</option>
+                    <option>Relish</option>
+                </select>
+                <img src="pic/waiting.gif">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">内容修改</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="name" class="col-sm-2 control-label">名称：</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="name" placeholder="名称" value="123">
+                        </div>
+                        <label for="flow" class="col-sm-2 control-label">目标流量：</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="flow" placeholder="目标流量(m³/s)">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="waterLevel1" class="col-sm-2 control-label">上游水位</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="waterLevel1" placeholder="上游水位(m)">
+                        </div>
+                        <label for="waterLevel2" class="col-sm-2 control-label">下游水位</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="waterLevel2" placeholder="下游水位(m)">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="nums" class="col-sm-2 control-label">机组开启台数</label>
+
+                        <div class="col-sm-4">
+                            <input type="number" class="form-control" id="nums" placeholder="机组开启台数">
+                        </div>
+                        <label for="angle1" class="col-sm-2 control-label">1#叶片角度</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="angle1" placeholder="1#叶片角度">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="angle2" class="col-sm-2 control-label">2#叶片角度</label>
+
+                        <div class="col-sm-4">
+                            <input type="number" class="form-control" id="angle2" placeholder="2#叶片角度">
+                        </div>
+                        <label for="angle3" class="col-sm-2 control-label">3#叶片角度</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="angle3" placeholder="3#叶片角度">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="angle4" class="col-sm-2 control-label">4#叶片角度</label>
+
+                        <div class="col-sm-4">
+                            <input type="number" class="form-control" id="angle4" placeholder="4#叶片角度">
+                        </div>
+                        <label for="angle5" class="col-sm-2 control-label">5#叶片角度</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="angle5" placeholder="5#叶片角度">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="price" class="col-sm-2 control-label">电量单价(元)</label>
+
+                        <div class="col-sm-4">
+                            <input type="number" class="form-control" id="price" placeholder="电量单价(元)">
+                        </div>
+                        <label for="long" class="col-sm-2 control-label">运行时长(小时)</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="long" placeholder="运行时长(小时)">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="total" class="col-sm-2 control-label">预计电费(元)</label>
+
+                        <div class="col-sm-4">
+                            <input type="number" class="form-control" id="total" placeholder="预计电费(元)">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<button type="button" onclick="$('#waitModal').modal({backdrop: 'static', keyboard: false})">显示</button>
+<button type="button" onclick="$('#waitModal').modal('show')">显示</button>
+<button type="button" onclick="$('#waitModal').modal('hide')">隐藏</button>
+
+<button type="button" onclick="$('#modal').modal({backdrop: 'static', keyboard: false})">显示</button>
+<button type="button" onclick="$('#modal').modal('hide')">隐藏</button>
+<button type="button" onclick="$('.selectpicker').selectpicker('refresh');">show</button>
+
+</body>
+</html>

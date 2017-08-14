@@ -23,9 +23,6 @@ public class MultScreenController {
 	@Resource(name="multScreenService")
 	private MultScreenService service;
 	
-	@Resource
-	ThtfWebSocketHandler handler;
-	
 	/**
 	 * 根据映射跳转到指定的页面
 	 */

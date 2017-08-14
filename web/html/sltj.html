@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>水量统计</title>
+    <style>
+        .div-height {
+            height: calc(100vh - 110px - 45px);
+            padding: 0px;
+            overflow-y: scroll;
+            overflow-x: hidden;
+        }
+
+        @media (min-height: 798px) {
+            .div-height {
+                overflow-y: hidden;
+            }
+        }
+
+        .div-height-2 {
+            height: calc(100vh - 110px - 85px);
+            /*overflow-y: hidden;*/
+        }
+
+        th {
+            padding-left: 0px !important;
+            padding-right: 0px !important;
+        }
+
+    </style>
+</head>
+<body>
+<div class="row">
+    <div class="col-lg-2 visible-lg" style="padding-right: 0px">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                查询选择列表
+            </div>
+            <div id="treeDiv" class="panel-body div-height" style="overflow-y: hidden">
+            </div>
+        </div>
+    </div>
+    <div id="sltjDiv" class="col-lg-10 col-md-12" style="padding-left: 0px">
+        <ul class="nav nav-tabs">
+            <li role="presentation" class="active">
+                <a href="#year" data-toggle="tab" aria-controls="home" aria-expanded="true">年水量统计</a>
+            </li>
+            <li role="presentation" class="">
+                <a href="#month" data-toggle="tab" aria-controls="profile" aria-expanded="false">月水量统计</a>
+            </li>
+            <li role="presentation" class="">
+                <a href="#ten" data-toggle="tab" aria-controls="profile" aria-expanded="false">旬水量统计</a>
+            </li>
+            <li role="presentation" class="">
+                <a href="#day" data-toggle="tab" aria-controls="profile" aria-expanded="false">日水量统计</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade active in" id="year" aria-labelledby="home-tab">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                               年：
+                            </span>
+                            <input type="text" class="form-control" v-model="year">
+                        </div>
+                    </div>
+                    <a href="#yearTable" class="btn btn-default" data-toggle="tab" v-on:click="getYearData()">年用水量统计</a>
+                    <a href="#yearChart" class="btn btn-default" data-toggle="tab">年用水量曲线</a>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane active div-height div-height-2" id="yearTable">
+                        <table class="table table-striped table-bordered text-center" >
+                            <thead>
+                            <tr>
+                                <th class="text-center">#</th>
+                                <th class="text-center">名称</th>
+                                <th class="text-center" v-for="month in ['一','二','三','四','五','六','七','八','九','十','十一','十二']">{{month}}月</th>
+                                <th class="text-center">合计</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="(item, index) in sltjyear">
+                                <td>{{++index}}</td>
+                                <td v-for="value in item">{{value}}</td>
+                                <td>{{total(item)}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane div-height div-height-2" id="yearChart"></div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="month" aria-labelledby="profile-tab">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                               年：
+                            </span>
+                            <input type="month" class="form-control" v-model="yearMonth">
+                        </div>
+                    </div>
+                    <a href="#monthTable" class="btn btn-default" data-toggle="tab" v-on:click="getMonthDate()">月用水量统计</a>
+                    <a href="#monthChart" class="btn btn-default" data-toggle="tab">月用水量曲线</a>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane active div-height div-height-2" id="monthTable">
+                        <table class="table table-striped table-bordered text-center">
+                            <thead>
+                            <tr>
+                                <th class="text-center">#</th>
+                                <th class="text-center">名称</th>
+                                <th class="text-center" v-for="item in ['上旬','中旬','下旬']">{{item}}</th>
+                                <th class="text-center">合计</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="(item, index) in sltjmonth">
+                                <td>{{++index}}</td>
+                                <td v-for="value in item">{{value}}</td>
+                                <td>{{total(item)}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane div-height div-height-2" id="monthChart"></div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="ten" aria-labelledby="profile-tab">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                               月：
+                            </span>
+                            <input type="month" class="form-control" v-model="yearMonth">
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                               旬：
+                            </span>
+                            <select class="selectpicker dropdown" v-model="ten">
+                                <option value="01">上旬</option>
+                                <option value="02">中旬</option>
+                                <option value="03">下旬</option>
+                            </select>
+                        </div>
+                    </div>
+                    <a href="#tenTable" class="btn btn-default" data-toggle="tab" v-on:click="getTenDate()">旬用水量统计</a>
+                    <a href="#tenChart" class="btn btn-default" data-toggle="tab">旬用水量曲线</a>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane active div-height div-height-2" id="tenTable">
+                        <table class="table table-striped table-bordered text-center">
+                            <thead>
+                            <tr>
+                                <th class="text-center">#</th>
+                                <th class="text-center">名称</th>
+                                <th class="text-center" v-for="day in ['一','二','三','四','五','六','七','八','九','十']">{{day}}日</th>
+                                <th class="text-center">合计</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="(item, index) in sltjten">
+                                <td>{{++index}}</td>
+                                <td v-for="value in item">{{value}}</td>
+                                <td>{{total(item)}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane div-height div-height-2" id="tenChart"></div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="day" aria-labelledby="profile-tab">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                               日：
+                            </span>
+                            <input type="date" class="form-control" v-model="date">
+                        </div>
+                    </div>
+                    <a href="#dayTable" class="btn btn-default" data-toggle="tab" v-on:click="getDayDate()">日用水量统计</a>
+                    <a href="#dayChart" class="btn btn-default" data-toggle="tab">日用水量曲线</a>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane active div-height div-height-2" id="dayTable">
+                        <table class="table table-striped table-bordered text-center">
+                            <thead>
+                            <tr>
+                                <th class="text-center">#</th>
+                                <th class="text-center">名称</th>
+                                <th class="text-center" v-for="key in keys">{{key}}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="(item, index) in sltjday">
+                                <td>{{++index}}</td>
+                                <td v-for="value in item">{{value}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane div-height div-height-2" id="dayChart"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    let app = new Vue({
+        el: '#sltjDiv',
+        data: {
+            year:util.getYear(),
+            yearMonth:util.timeFormat(null,"yyyy-MM"),
+            ten:util.getTen(),
+            date:util.timeFormat(null,"yyyy-MM-dd"),
+            sltjyear: [],
+            sltjmonth: [],
+            sltjten: [],
+            keys:['8点','16点'],
+            sltjday: [],
+            yearChart:'',
+            monthChart:'',
+            tenChart:'',
+            dayChart:'',
+        },
+        methods:{
+            total: function (item) {
+                let retTotal = 0;
+                for (var attr in item) {
+                    if(!isNaN(item[attr])){
+                        retTotal += parseFloat(item[attr]);
+                    }
+                }
+                return retTotal.toFixed(2);
+            },
+            getYearData: function () {
+                if(!typeData){
+                    swal('请先选择左侧统计分类');
+                    return;
+                }
+                let this_ = this;
+                this.sltjyear = Array.apply({}, typeData).map(function (item, index) {
+                    //返回数据
+                    return {
+                        name: item.text+this_.year ,
+                        one: Math.floor(Math.random() * 50),
+                        two: Math.floor(Math.random() * 50),
+                        three: Math.floor(Math.random() * 3),
+                        four: Math.floor(Math.random() * 90),
+                        five: Math.floor(Math.random() * 90),
+                        six: Math.floor(Math.random() * 90),
+                        seven: Math.floor(Math.random() * 90),
+                        eight: Math.floor(Math.random() * 90),
+                        nigh: (Math.random() * 10).toFixed(2),
+                        ten: Math.floor(Math.random() * 1000),
+                        eleven: Math.floor(Math.random() * 1000),
+                        twelve: Math.floor(Math.random() * 1000)
+                    }
+                });
+            },
+            getYearChart:function(){
+                if(!typeData){
+                    swal('请先选择左侧统计分类');
+                    return;
+                }
+                if(this.yearChart){
+                    this.yearChart.dispose();
+                }
+                this.yearChart = echarts.init(document.getElementById('yearChart'));
+
+                yearOption.legend.data = [];
+                yearOption.series = [];
+                let this_ = this;
+                //伪数据
+                Array.apply({}, typeData).map(function (item, index) {
+                    //加入legend
+                    yearOption.legend.data.push(item.text);
+                    //加入series数据
+                    yearOption.series[index] = {
+                        name:item.text,
+                        type:'line',
+                        data:(function () {
+                            let res = [];
+                            let len = 12;
+                            while (len--) {
+                                res.push((Math.random() * 5).toFixed(0) - 0);
+                            }
+                            return res;
+                        })()
+                    };
+                });
+                this.yearChart.setOption(yearOption);
+            },
+            getMonthDate: function () {
+                if(!typeData){
+                    swal('请先选择左侧统计分类');
+                    return;
+                }
+                let this_ = this;
+                this.sltjmonth = Array.apply({}, typeData).map(function (item, index) {
+                    return {
+                        name: item.text+this_.yearMonth ,
+                        early: Math.floor(Math.random() * 50),
+                        middle: Math.floor(Math.random() * 50),
+                        late: Math.floor(Math.random() * 300)
+                    }
+                });
+            },
+            getMonthChart:function(){
+                if(!typeData){
+                    swal('请先选择左侧统计分类');
+                    return;
+                }
+                if(this.monthChart){
+                    this.monthChart.dispose();
+                }
+                this.monthChart = echarts.init(document.getElementById('monthChart'));
+
+                monthOption.legend.data = [];
+                monthOption.series = [];
+                let this_ = this;
+                //伪数据
+                Array.apply({}, typeData).map(function (item, index) {
+                    //加入legend
+                    monthOption.legend.data.push(item.text);
+                    //加入series数据
+                    monthOption.series[index] = {
+                        name:item.text,
+                        type:'line',
+                        data:(function () {
+                            let res = [];
+                            let len = 12;
+                            while (len--) {
+                                res.push((Math.random() * 5).toFixed(0) - 0);
+                            }
+                            return res;
+                        })()
+                    };
+                });
+                this.monthChart.setOption(monthOption);
+            },
+            getTenDate: function () {
+                if(!typeData){
+                    swal('请先选择左侧统计分类');
+                    return;
+                }
+                let this_ = this;
+                this.sltjten = Array.apply({}, typeData).map(function (item, index) {
+                    return {
+                        name:  item.text+this_.yearMonth+this_.ten ,
+                        one: Math.floor(Math.random() * 50),
+                        two: Math.floor(Math.random() * 50),
+                        three: Math.floor(Math.random() * 3),
+                        four: Math.floor(Math.random() * 90),
+                        five: Math.floor(Math.random() * 90),
+                        six: Math.floor(Math.random() * 90),
+                        seven: Math.floor(Math.random() * 90),
+                        eight: Math.floor(Math.random() * 90),
+                        nigh: (Math.random() * 10).toFixed(2),
+                        ten: Math.floor(Math.random() * 1000)
+                    }
+                });
+            },
+            getTenChart:function(){
+                if(!typeData){
+                    swal('请先选择左侧统计分类');
+                    return;
+                }
+                if(this.tenChart){
+                    this.tenChart.dispose();
+                }
+                this.tenChart = echarts.init(document.getElementById('tenChart'));
+
+                tenOption.legend.data = [];
+                tenOption.series = [];
+                let this_ = this;
+                //伪数据
+                Array.apply({}, typeData).map(function (item, index) {
+                    //加入legend
+                    tenOption.legend.data.push(item.text);
+                    //加入series数据
+                    tenOption.series[index] = {
+                        name:item.text,
+                        type:'line',
+                        data:(function () {
+                            let res = [];
+                            let len = 12;
+                            while (len--) {
+                                res.push((Math.random() * 5).toFixed(0) - 0);
+                            }
+                            return res;
+                        })()
+                    };
+                });
+                this.tenChart.setOption(tenOption);
+            },
+            getDayDate: function () {
+                if(!typeData){
+                    swal('请先选择左侧统计分类');
+                    return;
+                }
+                let this_ = this;
+                this.sltjday = Array.apply({}, typeData).map(function (item, index) {
+                    return {
+                        name: item.text+this_.date ,
+                        eight: Math.floor(Math.random() * 90),
+                        sixteen: Math.floor(Math.random() * 1000)
+                    }
+                });
+            },
+            getDayChart:function(){
+                if(!typeData){
+                    swal('请先选择左侧统计分类');
+                    return;
+                }
+                if(this.dayChart){
+                    this.dayChart.dispose();
+                }
+                this.dayChart = echarts.init(document.getElementById('dayChart'));
+
+                dayOption.legend.data = [];
+                dayOption.series = [];
+                let this_ = this;
+                //伪数据
+                Array.apply({}, typeData).map(function (item, index) {
+                    //加入legend
+                    dayOption.legend.data.push(item.text);
+                    //加入series数据
+                    dayOption.series[index] = {
+                        name:item.text,
+                        type:'line',
+                        data:(function () {
+                            let res = [];
+                            let len = 12;
+                            while (len--) {
+                                res.push((Math.random() * 5).toFixed(0) - 0);
+                            }
+                            return res;
+                        })()
+                    };
+                });
+                this.dayChart.setOption(dayOption);
+            }
+        }
+
+    });
+
+    /**
+     * 图形
+     * */
+    let option = {
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data:[]
+        },
+        xAxis:  {
+            type: 'category',
+            boundaryGap: false,
+            data: []
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: '{value} m³/s'
+            }
+        },
+        series: [
+        ]
+    };
+    let yearOption = JSON.parse(JSON.stringify(option));
+    yearOption.xAxis.data = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+    let monthOption = JSON.parse(JSON.stringify(option));
+    monthOption.xAxis.data = ['上旬','中旬','下旬'];
+    let tenOption = JSON.parse(JSON.stringify(option));
+    tenOption.xAxis.data = ['一日','二日','三日','四日','五日','六日','七日','八日','九日','十日'];
+    let dayOption = JSON.parse(JSON.stringify(option));
+    dayOption.xAxis.data = ['8点','16点'];
+
+    let p = Promise.resolve(
+            $.ajax({
+                url: "json/sltjBuilding.json",
+                type: "get",
+                async: false,
+                dataType: 'json'
+            })
+    );
+    
+    let typeData = "";
+    /**
+     * 加载树形结构
+     */
+    $("#treeDiv").load("component/tree.html", function () {
+        loadTree("json/sltjKind.json", function (node) {
+            p.then(function (data) {
+                typeData = data[node.id];
+                console.log(typeData);
+            });
+        });
+    })
+    $('.selectpicker').selectpicker('refresh');
+
+    $('#year > div.row > a:nth-child(3)').on('shown.bs.tab', function (e) {
+        app.getYearChart();
+    });
+    $('#month > div.row > a:nth-child(3)').on('shown.bs.tab', function (e) {
+        app.getMonthChart();
+    });
+    $('#ten > div.row > a:nth-child(4)').on('shown.bs.tab', function (e) {
+        app.getTenChart();
+    });
+    $('#day > div.row > a:nth-child(3)').on('shown.bs.tab', function (e) {
+        app.getDayChart();
+    });
+</script>
+</body>
+</html>

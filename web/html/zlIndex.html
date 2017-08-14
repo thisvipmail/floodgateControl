@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>工作台（指令）</title>
+    <style>
+        .div-circle{
+            width: auto;
+            display: inline-block;
+            vertical-align: top;
+            font-size: 20px;
+        }
+        .div-circle-white{
+            width: 32px;
+            height: 32px;
+            display: inline-block;
+            border-radius: 50%;
+            background-color: white;
+            border-style: solid;
+            border-width: 1px;
+            border-color: #0f0f0f;
+        }
+        .div-circle-green{
+            width: 32px;
+            height: 32px;
+            display: inline-block;
+            border-radius: 50%;
+            background-color: #dff0d8;
+            border-style: solid;
+            border-width: 1px;
+            border-color: green;
+        }
+        .div-height{
+            height: calc(100vh - 110px - 30px - 34px - 45px);
+            width: 100%;
+            padding: 0px;
+            overflow-y: scroll;
+            overflow-x: hidden;
+        }
+        @media (min-height: 1080px) {
+            .div-height {
+                overflow-y: hidden;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="div-zl" class="panel panel-default" style="margin-bottom: 0px;">
+            <div class="panel-heading">
+                <div class="row" style="height: 30px">
+                    <div class="col-lg-3 text-center">
+                        <div class="div-circle">未执行：</div><div class="div-circle-white" style="margin-right: 20px"></div>
+                        <div class="div-circle">正在执行：</div><div class="div-circle-green"></div>
+                    </div>
+                    <div class="col-lg-5 text-center" style="font-size: 20px">
+                        指令状态：
+                        <div class="btn-group" style="margin-right: 20px">
+                            <button type="button" class="btn btn-default" v-on:click="query.status=''">默认所有</button>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="#" v-on:click="query.status=0">未执行</a></li>
+                                <li><a href="#" v-on:click="query.status=1">正在执行</a></li>
+                            </ul>
+                        </div>
+                        所属渠道：
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default" v-on:click="query.ssqd=''">默认所有</button>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="#" v-on:click="query.ssqd='LN'">鲁南段</a></li>
+                                <li><a href="#" v-on:click="query.ssqd='LB'">鲁北段</a></li>
+                                <li><a href="#" v-on:click="query.ssqd='JD'">胶东段</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="pull-right div-circle" >
+                            本次有<span class="text-danger">{{items.length}}</span>条指令，已确认<span class="text-danger">{{readNum}}</span>条
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body div-height" style="">
+                <div class="row">
+                    <!--<div class="col-lg-4" v-for="index_1 in 3">-->
+                    <div class="col-lg-12">
+                        <table class="table table-bordered text-center" style="margin-bottom: 0px" >
+                            <thead>
+                            <tr>
+                                <th class="text-center">#</th>
+                                <th class="text-center">名称</th>
+                                <th class="text-center">控制类型</th>
+                                <th class="text-center">目标值</th>
+                                <th class="text-center">水位</th>
+                                <th class="text-center">运行时间</th>
+                                <th class="text-center">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="(data,index) in items" v-if="Math.floor(index/22)===page-1" v-bind:style="bgSuccess(data)">
+                                <td>{{++index}}</td>
+                                <td>{{data.name+data.ssqd}}</td>
+                                <td>{{data.type===0?"开度":"流量"}}</td>
+                                <td>{{data.value}}</td>
+                                <td>{{data.waterLevel}}</td>
+                                <td>{{data.time}}</td>
+                                <td style="padding: 0px;">
+                                    <a class="btn btn-link btn-xs" style="font-size: 18px" v-on:click="stop(data)" v-bind:disabled="!data.state">急停</a>
+                                    <a class="btn btn-link btn-xs" style="font-size: 18px" v-on:click="view(data)" >{{data.state}}查看</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <div class="text-center">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default" v-on:click="page=1">one</button>
+                        <button type="button" class="btn btn-default" v-on:click="page=2" v-if="items.length>22">two</button>
+                        <button type="button" class="btn btn-default" v-on:click="page=3" v-if="items.length>44">three</button>
+                        <button type="button" class="btn btn-default" v-on:click="page=4" v-if="items.length>66">four</button>
+                        <button type="button" class="btn btn-default" v-on:click="page=5" v-if="items.length>88">five</button>
+                        <button type="button" class="btn btn-default" v-on:click="page=6" v-if="items.length>110">six</button>
+                        <button type="button" class="btn btn-default" v-on:click="page=6" v-if="items.length>132">seven</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+<script type="text/javascript">
+    function create(){
+        return Array.apply({},{length:64}).map(function(_,index){
+            return {
+                id:Math.random(),
+                name:'闸泵站'+index,
+                ssqd:['LN','LB','JD'][Math.round(Math.random()*2)],
+                type:Math.round(Math.random()),
+                value:Math.floor(Math.random()*100),
+                waterLevel:(Math.random()*100).toFixed(2)+' / '+(Math.random()*100).toFixed(2),
+                time:'2017-07-06 11:00 —— 2017-07-07 11:00',
+                state:Math.round(Math.random())
+            }
+        })
+    };
+    function* initzlData(){
+        while(true){
+            yield create();
+        }
+    }
+    let getData = initzlData();
+    /*setInterval(function () {
+        var object = getData.next();
+        itemsData = object.value;
+    },10000);*/
+
+    let promise = new Promise(function(resolve, reject) {
+        var object = getData.next();
+        resolve(object.value);
+    });
+
+    promise.then(function (data) {
+        let itemsData = data;
+        let app = new Vue({
+            el:'#div-zl',
+            data:{
+                page:1,
+                items:itemsData,
+                query:{
+                    status:"",
+                    ssqd:""
+                }
+            },
+            methods:{
+                bgSuccess:function(data){
+                    if(data.state === 1){
+                        return {
+                            'background-color':'#dff0d8'
+                        }
+                    }
+                },
+                stop:function(data){
+                    window.event.preventDefault();
+                    if($(window.event.target).attr("disabled")){
+                        return;
+                    }
+                    //发给闸控系统
+                    swal({
+                                title: "确认急停?",
+                                type: "error",
+                                showCancelButton: true,
+                                confirmButtonClass: "btn-danger",
+                                cancelButtonText: "否",
+                                confirmButtonText: "是",
+                                closeOnConfirm: false
+                            },
+                            function () {
+                                swal("急停成功====等待接入系统", "", "success");
+                            }
+                    );
+                },
+                view:function(data){
+                    window.event.preventDefault();
+                    //发给闸控系统
+                    alert("系统联动，开发准备中......");
+                },
+                sort: function () {
+                    let this_ = this;
+                    this.items.sort(function (curData, nextData) {
+                        if((curData.state === this_.query.status) && (curData.ssqd === this_.query.ssqd) ){
+                            return -10;
+                        }
+                        if((nextData.state === this_.query.status) && (nextData.ssqd === this_.query.ssqd) ){
+                            return 10;
+                        }
+
+                        if((curData.state === this_.query.status) || (curData.ssqd === this_.query.ssqd) ){
+                            return -1;
+                        }
+                        if((nextData.state === this_.query.status) || (nextData.ssqd === this_.query.ssqd) ){
+                            return 1;
+                        }
+                        return curData.time - nextData.time;
+                    });
+                },
+                filter: function () {
+                    let this_ = this;
+                    return itemsData.filter(function(item){
+                        return (this_.query.status!==""?item.state===this_.query.status:1)&&(this_.query.ssqd!==""?item.ssqd===this_.query.ssqd:1);
+                    })
+                }
+            },
+            computed:{
+                readNum:function(){
+                    //return itemsData.reduce(function(total,value){
+                    return itemsData.reduce(function(total,value){
+                        return total + value.state;
+                    },0);
+                }
+            },
+            watch:{
+                'query.status': function (newstatus) {
+                    //this.sort();
+                    this.items = this.filter();
+                },
+                'query.ssqd': function (newssqd) {
+                    //this.sort();
+                    this.items = this.filter();
+                }
+            }
+        });
+        setInterval(function () {
+            var object = getData.next();
+            app.items = object.value;
+            itemsData =  object.value;
+            app.items = app.filter();
+        },1000*60);
+    });
+
+</script>
+</body>
+</html>

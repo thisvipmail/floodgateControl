@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <link href="css/bootstrap-treeview.css" rel="stylesheet">
+</head>
+<body>
+<div class="">
+    <div id="treeview" class=""></div>
+</div>
+<script src="js/bootstrap-treeview.js"></script>
+<script type="text/javascript">
+        function loadTree(jsonUrl,nodeSelectFun){
+            $.getJSON(jsonUrl, function (data) {
+                $('#treeview').treeview({
+                    color: "#428bca",
+                    levels: 1,
+                    expandIcon: 'glyphicon glyphicon-chevron-right',
+                    collapseIcon: 'glyphicon glyphicon-chevron-down',
+                    nodeIcon: 'glyphicon glyphicon-bookmark',
+                    showTags: true,
+                    lastLevelSelect: true,
+                    data: data.nodes,
+                    onNodeSelected: function (event, node) {
+                        console.log("根据node.id='"+node.id+"'进行查询！");
+                        nodeSelectFun(node);
+                    },
+                    onNodeUnselected: function (event, node) {
+                        console.log("onNodeUnselected");
+                    }
+                });
+            });
+        };
+</script>
+</body>
+</html>

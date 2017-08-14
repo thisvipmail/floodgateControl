@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>工作台（水质）</title>
+    <style>
+        .div-height{
+            height: calc(100vh - 110px - 10px);
+            overflow-y: scroll;
+            overflow-x: hidden;
+        }
+        @media (min-height: 1080px) {
+            .div-height {
+                overflow-y: hidden;
+            }
+        }
+    </style>
+</head>
+<body>
+<div style="padding-top: 10px" class="container-fluid">
+    <div id="div_sz" class="row div-height">
+        <div class="col-lg-4 col-sm-6 col-xs-12 paddingRightNull" v-for="data in datas">
+            <div class="panel panel-primary">
+                <div class="panel-heading" data-toggle="modal" data-target="#myModal">
+                    {{data.name}}
+                </div>
+                <div class="panel-body">
+                    <span class="pull-left">时间：{{data.time}}</span>
+                    <span class="pull-right" v-bind:class="{'text-danger': data.level>'C' }">等级：{{data.level}}</span>
+                </div>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>监测项目</th>
+                        <th>检测值</th>
+                        <th>水质等级</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(item, index) in data.itemData" v-bind:class="{'text-danger': item.level>'C' }">
+                        <td>{{++index}}</td>
+                        <td>{{item.name}}</td>
+                        <td>{{item.value}}</td>
+                        <td>{{item.level}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog" style="width: 1002px">
+            <div class="modal-content" >
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">水质监测站平行曲线图</h4>
+                </div>
+                <div class="modal-body" id="mainChart" style="width: 1000px;height:800px;">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript">
+    var app = new Vue({
+        el:'#div_sz',
+        data:{
+            datas:[
+                {
+                    name:'东平湖北出口水质监测站',
+                    time:'2017-06-30 16:40',
+                    level:'A',
+                    itemData:[
+                        {
+                            name:'总氮',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'导电率',
+                            value:'12',
+                            level:'B'
+                        },
+                        {
+                            name:'PH值',
+                            value:'1',
+                            level:'C'
+                        },
+                        {
+                            name:'溶解氧',
+                            value:'12',
+                            level:'D'
+                        },
+                        {
+                            name:'总磷',
+                            value:'12',
+                            level:'E'
+                        },
+                        {
+                            name:'高锰酸盐指数',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'水温',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'氨氮',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'浑浊度',
+                            value:'22',
+                            level:'B'
+                        }
+                    ]
+                },
+                {
+                    name:'南四湖出口水质监测站',
+                    time:'2017-06-30 16:40',
+                    level:'D',
+                    itemData:[
+                        {
+                            name:'总氮',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'导电率',
+                            value:'12',
+                            level:'B'
+                        },
+                        {
+                            name:'PH值',
+                            value:'1',
+                            level:'C'
+                        },
+                        {
+                            name:'溶解氧',
+                            value:'12',
+                            level:'D'
+                        },
+                        {
+                            name:'总磷',
+                            value:'12',
+                            level:'E'
+                        },
+                        {
+                            name:'高锰酸盐指数',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'水温',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'氨氮',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'浑浊度',
+                            value:'22',
+                            level:'B'
+                        }
+                    ]
+                },
+                {
+                    name:'临清市界水质监测站',
+                    time:'2017-06-30 16:40',
+                    level:'A',
+                    itemData:[
+                        {
+                            name:'总氮',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'导电率',
+                            value:'12',
+                            level:'B'
+                        },
+                        {
+                            name:'PH值',
+                            value:'1',
+                            level:'C'
+                        },
+                        {
+                            name:'溶解氧',
+                            value:'12',
+                            level:'D'
+                        },
+                        {
+                            name:'总磷',
+                            value:'12',
+                            level:'E'
+                        },
+                        {
+                            name:'高锰酸盐指数',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'水温',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'氨氮',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'浑浊度',
+                            value:'22',
+                            level:'B'
+                        }
+                    ]
+                },
+                {
+                    name:'穿黄管理处水质监测站',
+                    time:'2017-06-30 16:40',
+                    level:'A',
+                    itemData:[
+                        {
+                            name:'总氮',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'导电率',
+                            value:'12',
+                            level:'B'
+                        },
+                        {
+                            name:'PH值',
+                            value:'1',
+                            level:'C'
+                        },
+                        {
+                            name:'溶解氧',
+                            value:'12',
+                            level:'D'
+                        },
+                        {
+                            name:'总磷',
+                            value:'12',
+                            level:'E'
+                        },
+                        {
+                            name:'高锰酸盐指数',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'水温',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'氨氮',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'浑浊度',
+                            value:'22',
+                            level:'B'
+                        }
+                    ]
+                },
+                {
+                    name:'东平湖八里湾泵站水质监测站',
+                    time:'2017-06-30 16:40',
+                    level:'A',
+                    itemData:[
+                        {
+                            name:'总氮',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'导电率',
+                            value:'12',
+                            level:'B'
+                        },
+                        {
+                            name:'PH值',
+                            value:'1',
+                            level:'C'
+                        },
+                        {
+                            name:'溶解氧',
+                            value:'12',
+                            level:'D'
+                        },
+                        {
+                            name:'总磷',
+                            value:'12',
+                            level:'E'
+                        },
+                        {
+                            name:'高锰酸盐指数',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'水温',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'氨氮',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'浑浊度',
+                            value:'22',
+                            level:'B'
+                        }
+                    ]
+                },
+                {
+                    name:'博兴水质监测站',
+                    time:'2017-06-30 16:40',
+                    level:'A',
+                    itemData:[
+                        {
+                            name:'总氮',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'导电率',
+                            value:'12',
+                            level:'B'
+                        },
+                        {
+                            name:'PH值',
+                            value:'1',
+                            level:'C'
+                        },
+                        {
+                            name:'溶解氧',
+                            value:'12',
+                            level:'D'
+                        },
+                        {
+                            name:'总磷',
+                            value:'12',
+                            level:'E'
+                        },
+                        {
+                            name:'高锰酸盐指数',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'水温',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'氨氮',
+                            value:'12',
+                            level:'A'
+                        },
+                        {
+                            name:'浑浊度',
+                            value:'22',
+                            level:'B'
+                        }
+                    ]
+                }
+            ]
+        }
+    });
+
+</script>
+
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    let myChart = echarts.init(document.getElementById('mainChart'));
+
+    let data = [
+        [1,55,9,56,0.46,18,6,"良"],
+        [2,25,11,21,0.65,34,9,"优"],
+        [3,56,7,63,0.3,14,5,"良"],
+        [4,33,7,29,0.33,16,6,"优"],
+        [5,42,24,44,0.76,40,16,"优"],
+        [6,82,58,90,1.77,68,33,"良"],
+        [7,74,49,77,1.46,48,27,"良"]
+
+    ];
+
+    let schema = [
+        {name: 'date', index: 0, text: '日期'},
+        {name: 'AQIindex', index: 1, text: 'AQI'},
+        {name: 'PM25', index: 2, text: 'PM2.5'},
+        {name: 'PM10', index: 3, text: 'PM10'},
+        {name: 'CO', index: 4, text: ' CO'},
+        {name: 'NO2', index: 5, text: 'NO2'},
+        {name: 'SO2', index: 6, text: 'SO2'},
+        {name: '等级', index: 7, text: '等级'}
+    ];
+
+    let lineStyle = {
+        normal: {
+            width: 1,
+            opacity: 0.5
+        }
+    };
+
+    let option = {
+        backgroundColor: '#dff0d8',
+        legend: {
+            bottom: 30,
+            data: ['监测站'],
+            itemGap: 20,
+            textStyle: {
+                color: '#000',
+                fontSize: 14
+            }
+        },
+        tooltip: {},
+
+        parallelAxis: [
+            {dim: 0, name: schema[0].text, inverse: true, max: 7, nameLocation: 'start'},
+            {dim: 1, name: schema[1].text},
+            {dim: 2, name: schema[2].text},
+            {dim: 3, name: schema[3].text},
+            {dim: 4, name: schema[4].text},
+            {dim: 5, name: schema[5].text},
+            {dim: 6, name: schema[6].text},
+            {dim: 7, name: schema[7].text,
+                type: 'category', data: ['优', '良', '轻度污染', '中度污染', '重度污染', '严重污染']}
+        ],
+        parallel: {
+            left: '5%',
+            right: '18%',
+            bottom: 100,
+            parallelAxisDefault: {
+                type: 'value',
+                name: 'AQI指数',
+                nameLocation: 'end',
+                nameGap: 20,
+                nameTextStyle: {
+                    color: '#000',
+                    fontSize: 12
+                },
+                axisLine: {
+                    lineStyle: {
+                        color: '#aaa'
+                    }
+                },
+                axisTick: {
+                    lineStyle: {
+                        color: '#777'
+                    }
+                },
+                splitLine: {
+                    show: false
+                },
+                axisLabel: {
+                    textStyle: {
+                        color: '#000'
+                    }
+                }
+            }
+        },
+        series: [
+            {
+                name: '监测站',
+                type: 'parallel',
+                lineStyle: lineStyle,
+                data: data
+            }
+        ]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+</body>
+</html>

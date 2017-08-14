@@ -5,3 +5,7 @@
 .settings/org.eclipse.wst.jsdt.ui.superType.name
 web/META-INF/MANIFEST.MF
 *.class
+.classpath
+.project
+.settings/.jsdtscope
+*.prefs

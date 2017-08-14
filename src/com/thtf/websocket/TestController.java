@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/testController")
 public class TestController {
 
+	@Resource
 	ThtfWebSocketHandler handler;
 	
 	@RequestMapping(value = "/broadcast", method = RequestMethod.GET)

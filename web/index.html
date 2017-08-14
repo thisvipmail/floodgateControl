@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>工作台（指令）</title>
+    <link href="css/jquery.pagination.css" rel="stylesheet">
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-theme.css" rel="stylesheet">
+    <link href="css/docs.css" rel="stylesheet">
+    <link href="css/sweetalert.css" rel="stylesheet">
+    <link href="css/bootstrap-select.css" rel="stylesheet">
+    <link href="css/bootstrap-table.css" rel="stylesheet">
+    <link href="css/bootstrap-editable.css" rel="stylesheet">
+    <script src="js/jquery-1.11.2.min.js" ></script>
+    <script src="js/jquery.pagination-1.2.7.min.js" ></script>
+    <script src="js/bootstrap.js" ></script>
+    <script src="js/vue.js" ></script>
+    <script src="js/echarts.min.js"></script>
+    <script src="js/sweetalert.min.js"></script>
+    <script src="js/bootstrap-select.js"></script>
+    <script src="js/defaults-zh_CN.js"></script>
+    <script src="js/bootstrap-table.js"></script>
+    <script src="js/bootstrap-table-zh-CN.js"></script>
+    <script src="js/bootstrap-editable.js"></script>
+    <script src="js/bootstrap-table-editable.js"></script>
+    <script src="js/data.js" ></script>
+    <script src="js/Util.js" ></script>
+    <style>
+        .panel-group .panel + .panel {
+            margin-top: 20px !important;
+            text-align: center !important;
+        }
+        .paddingRightNull{
+            padding-right: 0px;
+        }
+    </style>
+</head>
+<body style="overflow-y: hidden">
+<div class="container-fluid">
+    <div class="text-center bg-success" style="height: 110px">
+        指令工作台
+    </div>
+    <div class="row">
+        <div class="col-sm-1 hidden-xs" style="padding-right: 0px;">
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default text-center" style="margin-top: 20px;">
+                    <div class="panel-heading" role="tab" id="headingOne">
+                        <h4 class="panel-title">
+                            <a onclick="changeHtml()" role="button" data-toggle="collapse" data-parent="#accordion" href="#zlIndex"
+                               aria-expanded="true" aria-controls="collapseOne">
+                                调度指令
+                            </a>
+                        </h4>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingTwo">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"
+                               aria-expanded="false" aria-controls="collapseTwo">
+                                调度管理
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                        <ul class="list-group">
+                            <li class="list-group-item"><a onclick="changeHtml()" href="#waterPlan-Y">年用水计划</a></li>
+                            <li class="list-group-item"><a onclick="changeHtml()" href="#waterPlan-M">月用水计划</a></li>
+                            <li class="list-group-item"><a onclick="changeHtml()" href="#waterPlan-T">旬用水计划</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingFour">
+                        <h4 class="panel-title">
+                            <a onclick="changeHtml()" class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#sqjk"
+                               aria-expanded="false" aria-controls="collapseFour">
+                                水情监测
+                            </a>
+                        </h4>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingFive">
+                        <h4 class="panel-title">
+                            <a onclick="changeHtml()" class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#gcaq"
+                               aria-expanded="false" aria-controls="collapseFive">
+                                工程安全
+                            </a>
+                        </h4>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingSix">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix"
+                               aria-expanded="false" aria-controls="collapseSix">
+                                水量统计
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
+                        <ul class="list-group">
+                            <li class="list-group-item"><a onclick="changeHtml()" href="#sltj">统计</a></li>
+                            <li class="list-group-item"><a onclick="changeHtml()" href="#slwh">维护</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingSeven">
+                        <h4 class="panel-title">
+                            <a onclick="changeHtml()" class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#szIndex"
+                               aria-expanded="false" aria-controls="collapseSeven">
+                                水质监测
+                            </a>
+                        </h4>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingEight">
+                        <h4 class="panel-title">
+                            <a onclick="changeHtml()" class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#ddyh"
+                               aria-expanded="false" aria-controls="collapseEight">
+                                优化调度
+                            </a>
+                        </h4>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingNine">
+                        <h4 class="panel-title">
+                            <a onclick="changeHtml()" class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#bbtj"
+                               aria-expanded="false" aria-controls="collapseNine">
+                                统计报表
+                            </a>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-11">
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="waitModal">
+    <div class="modal-dialog" style="position:absolute;left:45%;transform:translateX(-45%);top:45%;transform:translateY(-45%)">
+        <div class="modal-content" style="width: 158px">
+            <div class="modal-body">
+                <img src="pic/waiting.gif" >
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(".col-sm-11").load("html/zlIndex.html");
+    const waitModal = $('#waitModal');
+    var preUrl = "";
+    function changeHtml(){
+        window.event.preventDefault();
+        var hash = window.event.target.hash;
+        hash = hash.slice(1);
+        if(preUrl !== hash){
+            preUrl = hash;
+            //waitModal.modal({backdrop: 'static', keyboard: false});
+            $(".col-sm-11").load("html/"+hash+".html",function(){
+                //waitModal.modal('hide');
+            });
+        }
+    }
+    Vue.config.ignoredElements = ['data-actions-box','data-size','data-selected-text-format'];
+</script>
+</body>
+</html>
