@@ -53,7 +53,7 @@
                         <div class="div-circle">正在执行：</div><div class="div-circle-green"></div>
                     </div>
                     <div class="col-lg-5 text-center" style="font-size: 20px">
-                        指令状态：
+                        	指令状态：
                         <div class="btn-group" style="margin-right: 20px">
                             <button type="button" class="btn btn-default" v-on:click="query.status=''">默认所有</button>
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -65,7 +65,7 @@
                                 <li><a href="#" v-on:click="query.status=1">正在执行</a></li>
                             </ul>
                         </div>
-                        所属渠道：
+                        	所属渠道：
                         <div class="btn-group">
                             <button type="button" class="btn btn-default" v-on:click="query.ssqd=''">默认所有</button>
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -81,7 +81,9 @@
                     </div>
                     <div class="col-lg-4">
                         <div class="pull-right div-circle" >
-                            本次有<span class="text-danger">{{items.length}}</span>条指令，已确认<span class="text-danger">{{readNum}}</span>条
+                            	本次有
+                            	<span class="text-danger">{{items.length}}</span>条指令，已确认
+                            	<span class="text-danger">{{readNum}}</span>条
                         </div>
                     </div>
                 </div>
@@ -105,11 +107,11 @@
                             <tbody>
                             <tr v-for="(data,index) in items" v-if="Math.floor(index/22)===page-1" v-bind:style="bgSuccess(data)">
                                 <td>{{++index}}</td>
-                                <td>{{data.name+data.ssqd}}</td>
-                                <td>{{data.type===0?"开度":"流量"}}</td>
-                                <td>{{data.value}}</td>
-                                <td>{{data.waterLevel}}</td>
-                                <td>{{data.time}}</td>
+                                <td>{{data.conCode}}</td>
+                                <td>{{data.type==='01'?"流量":"开度"}}</td>
+                                <td>{{data.conValue}}</td>
+                                <td>{{data.befLevel}} / {{data.aftLevel}}</td>
+                                <td>{{data.staTime}} —— {{data.endTime}}</td>
                                 <td style="padding: 0px;">
                                     <a class="btn btn-link btn-xs" style="font-size: 18px" v-on:click="stop(data)" v-bind:disabled="!data.state">急停</a>
                                     <a class="btn btn-link btn-xs" style="font-size: 18px" v-on:click="view(data)" >{{data.state}}查看</a>
@@ -136,7 +138,7 @@
         </div>
 <script type="text/javascript">
     function create(){
-        return Array.apply({},{length:64}).map(function(_,index){
+        /* return Array.apply({},{length:64}).map(function(_,index){
             return {
                 id:Math.random(),
                 name:'闸泵站'+index,
@@ -147,7 +149,19 @@
                 time:'2017-07-06 11:00 —— 2017-07-07 11:00',
                 state:Math.round(Math.random())
             }
-        })
+        }) */
+        let retData = null;
+		$.ajax({
+			url: "directController/query.mvc",
+			async: false,
+			type: "post",
+			contentType: "application/json; charset=utf-8",    
+			dataType: 'json',
+			data : {}
+		}).success(function(data){
+			retData = data;
+		});
+		return retData;
     };
     function* initzlData(){
         while(true){
@@ -155,10 +169,6 @@
         }
     }
     let getData = initzlData();
-    /*setInterval(function () {
-        var object = getData.next();
-        itemsData = object.value;
-    },10000);*/
 
     let promise = new Promise(function(resolve, reject) {
         var object = getData.next();
@@ -167,6 +177,7 @@
 
     promise.then(function (data) {
         let itemsData = data;
+        console.log(data);
         let app = new Vue({
             el:'#div-zl',
             data:{
@@ -255,11 +266,12 @@
                 }
             }
         });
+		//定时刷新时间获取可执行指令
         setInterval(function () {
-            var object = getData.next();
-            app.items = object.value;
-            itemsData =  object.value;
-            app.items = app.filter();
+        	itemsData.forEach(function(item, index){
+                console.log(item.staTime - new Date());
+                debugger;
+            });
         },1000*60);
     });
 

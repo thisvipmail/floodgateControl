@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="AZ_SLDD_INSTRUCT")
@@ -69,6 +70,12 @@ public class DirectEntity {
 	
 	@Column(name="DB_TIME",columnDefinition="TIMESTAMP")
 	private Date dbTime;
+	
+	@Transient
+	private String ssqd;
+	
+	@Transient
+	private int state;
 	
 	public String getInstructCode() {
 		return instructCode;
@@ -149,6 +156,23 @@ public class DirectEntity {
 	public void setDbTime(Date dbTime) {
 		this.dbTime = dbTime;
 	}
+
+	public String getSsqd() {
+		return ssqd;
+	}
+
+	public void setSsqd(String ssqd) {
+		this.ssqd = ssqd;
+	}
+
+	public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
+	}
+
 
 	
 }
