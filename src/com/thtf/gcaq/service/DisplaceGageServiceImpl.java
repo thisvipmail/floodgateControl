@@ -9,6 +9,7 @@ import org.hibernate.type.FloatType;
 import org.hibernate.type.StringType;
 import org.hibernate.type.Type;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.thtf.gcaq.entity.DisplaceGage;
 
@@ -16,17 +17,18 @@ import com.thtf.gcaq.entity.DisplaceGage;
 public class DisplaceGageServiceImpl<T> extends GcaqServiceImpl<T>{
 
 	@Override
+	@Transactional
 	public List<T> query(Map<String,Object> params) {
 		
-		String queryString = "select apparatusname,surveytime,valuex,valuey,valuez from(select ROW_NUMBER()over(partition by app.APPARATUSID order by os.SURVEYTIME desc), "
+		String queryString = "select apparatusname name,surveytime time,valuex,valuey,valuez from(select ROW_NUMBER()over(partition by app.APPARATUSID order by dg.SURVEYTIME desc), "
 				+ "app.APPARATUSNAME,dg.SURVEYTIME,dg.valuex,dg.valuey,dg.valuez "
-				+ "from AO_XXJC_B_DISPLACEGAGE dg ,AO_XXJC_B_APPARATUSINFO app,AO_XXJC_B_SURVEYPOINT sp "
+				+ "from AO_XXJC_B_DISPLACEGAGE dg ,AO_XXJC_B_APPARATUSINFO app,AO_XXJC_B_SURVEYPOINT sp,FGPS_ALL_VIEW fgps "
 				+ "where dg.APPARATUSCODE = app.APPARATUSCODE and app.SURVEYPOINTID = sp.SURVEYPOINTID "
-				+ "and sp.FGPSTATIONID = :fgps)where rownum = 1";
+				+ "and sp.FGPSTATIONID = fgps.WGCD and fgps.wgno = :fgps)where rownum = 1";
 		
 		Map<String,Type> scalarMap = new HashMap<String,Type>();
-		scalarMap.put("apparatusname", StringType.INSTANCE);
-		scalarMap.put("surveytime", DateType.INSTANCE);
+		scalarMap.put("name", StringType.INSTANCE);
+		scalarMap.put("time", DateType.INSTANCE);
 		scalarMap.put("valuex", FloatType.INSTANCE);
 		scalarMap.put("valuey", FloatType.INSTANCE);
 		scalarMap.put("valuez", FloatType.INSTANCE);

@@ -15,40 +15,40 @@ import org.springframework.format.annotation.NumberFormat.Style;
 @Table(name="AO_XXJC_B_JOINTMETER")
 public class Jointmeter extends OriginalDataBase {
 
-	@Column(columnDefinition = "decimal(8,4)")
+	@Column(name="frequency", columnDefinition = "decimal(8,4)")
 	@NumberFormat(pattern="####.####",style=Style.NUMBER)
-	private float value;
+	private float valuex;
 	
-	@Column(columnDefinition = "decimal(8,4)")
+	@Column(name="value", columnDefinition = "decimal(8,4)")
 	@NumberFormat(pattern="####.####",style=Style.NUMBER)
-	private float frequency;
+	private float valuez;
 	
-	@Column(columnDefinition = "decimal(8,4)")
+	@Column(name="temperature", columnDefinition = "decimal(8,4)")
 	@NumberFormat(pattern="####.####",style=Style.NUMBER)
-	private float temperature;
+	private float valuey;
 
-	public float getValue() {
-		return value;
+	public float getValuex() {
+		return valuex;
 	}
 
-	public void setValue(float value) {
-		this.value = value;
+	public void setValuex(float valuex) {
+		this.valuex = valuex;
 	}
 
-	public float getFrequency() {
-		return frequency;
+	public float getValuez() {
+		return valuez;
 	}
 
-	public void setFrequency(float frequency) {
-		this.frequency = frequency;
+	public void setValuez(float valuez) {
+		this.valuez = valuez;
 	}
 
-	public float getTemperature() {
-		return temperature;
+	public float getValuey() {
+		return valuey;
 	}
 
-	public void setTemperature(float temperature) {
-		this.temperature = temperature;
+	public void setValuey(float valuey) {
+		this.valuey = valuey;
 	}
 
 }

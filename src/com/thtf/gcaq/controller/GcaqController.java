@@ -35,16 +35,16 @@ public class GcaqController extends BaseController<OriginalDataBase>{
 	private GcaqService<OriginalDataBase> gcaqService;
 	
 	@Resource(name="dgService")
-	private DisplaceGageServiceImpl<DisplaceGage> dgService;
+	private GcaqService<DisplaceGage> dgService;
 	
 	@Resource(name="osService")
-	private OsmometerServiceImpl<Osmometer> osService;
+	private GcaqService<Osmometer> osService;
 	
 	@Resource(name="jmService")
-	private JointmeterServiceImpl<Jointmeter> jmService;
+	private GcaqService<Jointmeter> jmService;
 	
 	@Resource(name="spService")
-	private SoilPressServiceImpl<SoilPresses> spService;
+	private GcaqService<SoilPresses> spService;
 	
 	@Override
 	public BaseService<OriginalDataBase> getBaseService() {
@@ -55,14 +55,10 @@ public class GcaqController extends BaseController<OriginalDataBase>{
 	 */
 	@RequestMapping(value = "/query")
 	@ResponseBody
-	public List<GcaqEntity> query(@RequestParam(value = "params", required = true)Map<String,String> params){
+	public List<GcaqEntity> query(@RequestParam(value = "fgps", required = true)String fgps){
 		Map<String,Object> map = new HashMap<String,Object>();
-		Iterator<String> it = params.keySet().iterator();
-		while(it.hasNext()){
-			String key = it.next();
-			String value = params.get(key);
-			map.put(key, value);
-		}
+		map.put("fgps", fgps);
+		
 		List<DisplaceGage> dgList = dgService.query(map);
 		List<Osmometer> osList = osService.query(map);
 		List<Jointmeter> jmList = jmService.query(map);
@@ -73,25 +69,25 @@ public class GcaqController extends BaseController<OriginalDataBase>{
 		GcaqEntity<DisplaceGage> dg = new GcaqEntity<DisplaceGage>();
 		dg.setName("位移计");
 		dg.setCode("wyj");
-		dg.setList(dgList);
+		dg.setItemData(dgList);
 		list.add(dg);
 		
 		GcaqEntity<Osmometer> os = new GcaqEntity<Osmometer>();
 		os.setName("渗压计");
 		os.setCode("syj");
-		os.setList(osList);
+		os.setItemData(osList);
 		list.add(os);
 		
 		GcaqEntity<Jointmeter> jm = new GcaqEntity<Jointmeter>();
 		jm.setName("测缝计");
 		jm.setCode("cfj");
-		jm.setList(jmList);
+		jm.setItemData(jmList);
 		list.add(jm);
 		
 		GcaqEntity<SoilPresses> sp = new GcaqEntity<SoilPresses>();
 		sp.setName("渗压计");
 		sp.setCode("syj");
-		sp.setList(dpList);
+		sp.setItemData(dpList);
 		list.add(sp);
 		
 		return list;

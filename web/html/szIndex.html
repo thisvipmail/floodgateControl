@@ -25,7 +25,7 @@
                     {{data.name}}
                 </div>
                 <div class="panel-body">
-                    <span class="pull-left">时间：{{data.time}}</span>
+                    <span class="pull-left">时间：{{formatDate(data.time)}}</span>
                     <span class="pull-right" v-bind:class="{'text-danger': data.level>'C' }">等级：{{data.level}}</span>
                 </div>
                 <table class="table table-bordered table-striped">
@@ -70,11 +70,11 @@
 
 </div>
 <script type="text/javascript">
-    var app = new Vue({
+    let app = new Vue({
         el:'#div_sz',
         data:{
             datas:[
-                {
+               /* {
                     name:'东平湖北出口水质监测站',
                     time:'2017-06-30 16:40',
                     level:'A',
@@ -385,9 +385,27 @@
                             level:'B'
                         }
                     ]
-                }
+                }*/
             ]
+        },
+        methods:{
+            formatDate:function(date){
+                return util.timeFormat(date,'yyyy-MM-dd hh:mm')
+            }
         }
+    });
+
+    $.ajax({
+        url: "wtlvController/query.mvc",
+        async: false,
+        type: "get",
+        contentType: "application/json; charset=utf-8",
+        dataType: 'json',
+        data : {
+        }
+    }).success(function(data){
+        console.log(data);
+        app.datas = data;
     });
 
 </script>

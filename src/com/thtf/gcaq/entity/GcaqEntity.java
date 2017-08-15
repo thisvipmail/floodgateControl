@@ -14,7 +14,7 @@ public class GcaqEntity<T> {
 	 */
 	private String code;
 	
-	private List<T> list;
+	private List<T> itemData;
 	
 
 	public String getName() {
@@ -33,12 +33,13 @@ public class GcaqEntity<T> {
 		this.code = code;
 	}
 
-	public List<T> getList() {
-		return list;
+	public List<T> getItemData() {
+		return itemData;
 	}
 
-	public void setList(List<T> list) {
-		this.list = list;
+	public void setItemData(List<T> itemData) {
+		this.itemData = itemData;
 	}
+
 
 }

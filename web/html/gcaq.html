@@ -63,8 +63,49 @@
             </div>
         </div>
     </script>
-    <script>
-        var app = new Vue({
+</head>
+<body>
+    <div id="div-gcaq" class="row">
+        <div class="col-lg-2 visible-lg" style="padding-right: 0px">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    查询选择树
+                </div>
+                <div id="treeDiv" class="panel-body div-height">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5 col-sm-6 col-xs-12" v-for="data in datas" style="padding-left: 0px">
+            <panelPages v-bind:data="data">
+            </panelPages>
+        </div>
+    </div>
+<script type="text/javascript">
+    $("#treeDiv").load("component/tree.html",function(){
+        Promise.resolve(loadTree("json/tree.json",function(node){
+            console.log(node);
+            $.ajax({
+    			url: "gcaqController/query.mvc",
+    			async: true,
+    			type: "get",
+    			contentType: "application/json; charset=utf-8",    
+    			dataType: 'json',
+    			data : {
+                    fgps:node.id
+                }
+    		}).success(function(data){
+                console.log(data);
+                app.datas = data;
+    		});
+            
+        })).then(function(){
+            initApp();
+        });
+    });
+	let app = null;
+    let initApp = function(){
+        app = new Vue({
             el:'#div-gcaq',
             data:{
                 datas:[
@@ -392,71 +433,7 @@
                 }
             }
         });
-    </script>
-</head>
-<body>
-    <div id="div-gcaq" class="row">
-        <div class="col-lg-2 visible-lg" style="padding-right: 0px">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    查询选择树
-                </div>
-                <div id="treeDiv" class="panel-body div-height">
-
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-5 col-sm-6 col-xs-12" v-for="data in datas" style="padding-left: 0px">
-            <!--<div class="panel panel-primary" style="margin-bottom: 0px;">
-                <div class="panel-heading">
-                    {{data.name}}
-                </div>
-                <div class="div-height-2">
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>仪器名称</th>
-                            <th>数据时间</th>
-                            <th>{{getColXName(data.code)}}</th>
-                            <th>{{getColYName(data.code)}}</th>
-                            <th>{{getColZName(data.code)}}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr v-for="(item, index) in data.itemData" v-if="Math.floor(index/6)===page-1">
-                            <td>{{++index}}</td>
-                            <td>{{item.name}}</td>
-                            <td>{{item.time}}</td>
-                            <td>{{item.valuex}}</td>
-                            <td>{{item.valuey}}</td>
-                            <td>{{item.valuez}}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="text-center">
-                <span class="badge" v-on:click="page=1">1</span>
-                <span class="badge" v-on:click="page=2" v-if="data.itemData.length>6">2</span>
-                <span class="badge" v-on:click="page=3" v-if="data.itemData.length>12">3</span>
-                <span class="badge" v-on:click="page=4" v-if="data.itemData.length>18">4</span>
-            </div>-->
-            <panelPages v-bind:data="data">
-
-            </panelPages>
-        </div>
-    </div>
-<script type="text/javascript">
-    $(function(){
-        $("#treeDiv").load("component/tree.html",function(){
-            loadTree("json/tree.json",function(node){
-                console.log(node);
-            });
-        });
-    });
-
-
+    };
 </script>
 </body>
 </html>

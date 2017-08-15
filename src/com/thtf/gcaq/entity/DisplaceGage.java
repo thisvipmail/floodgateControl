@@ -17,37 +17,39 @@ public class DisplaceGage extends OriginalDataBase {
 
 	@Column(columnDefinition = "decimal(8,4)")
 	@NumberFormat(pattern="####.####",style=Style.NUMBER)
-	private float valueX;
+	private float valuex;
 	
 	@Column(columnDefinition = "decimal(8,4)")
 	@NumberFormat(pattern="####.####",style=Style.NUMBER)
-	private float valueY;
+	private float valuey;
 	
 	@Column(columnDefinition = "decimal(8,4)")
 	@NumberFormat(pattern="####.####",style=Style.NUMBER)
-	private float valueZ;
+	private float valuez;
+
+	public float getValuex() {
+		return valuex;
+	}
+
+	public void setValuex(float valuex) {
+		this.valuex = valuex;
+	}
+
+	public float getValuey() {
+		return valuey;
+	}
+
+	public void setValuey(float valuey) {
+		this.valuey = valuey;
+	}
+
+	public float getValuez() {
+		return valuez;
+	}
+
+	public void setValuez(float valuez) {
+		this.valuez = valuez;
+	}
 	
-	public float getValueX() {
-		return valueX;
-	}
-
-	public void setValueX(float valueX) {
-		this.valueX = valueX;
-	}
-
-	public float getValueY() {
-		return valueY;
-	}
-
-	public void setValueY(float valueY) {
-		this.valueY = valueY;
-	}
-
-	public float getValueZ() {
-		return valueZ;
-	}
-
-	public void setValueZ(float valueZ) {
-		this.valueZ = valueZ;
-	}
+	
 }

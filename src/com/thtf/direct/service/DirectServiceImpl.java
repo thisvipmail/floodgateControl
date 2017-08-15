@@ -19,7 +19,6 @@ import com.thtf.base.service.BaseServiceImpl;
 import com.thtf.direct.dao.DirectDao;
 
 @Service(value="directService")
-@Transactional
 public class DirectServiceImpl<T> extends BaseServiceImpl<T> implements DirectService<T>{
 
 	@Resource(name="directDao")

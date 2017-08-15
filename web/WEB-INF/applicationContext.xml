@@ -24,7 +24,6 @@
 	<!-- was jndi -->
 	<!-- <jee:jndi-lookup expected-type="javax.sql.DataSource" id="dataSource" jndi-name="${jndiName}"></jee:jndi-lookup> -->
 
-		<!-- class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean" -->
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
 		>
@@ -54,6 +53,8 @@
 	</bean>
 	<tx:annotation-driven transaction-manager="transactionManager" />
 
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
  	<!-- 配置自动扫描的包 -->   
 	<context:component-scan base-package="com.thtf" use-default-filters="false">
 		<context:include-filter type="annotation"
@@ -62,5 +63,7 @@
 			expression="org.springframework.stereotype.Repository" />
 	</context:component-scan>
 
+	<!-- axis由于无法用注解注入，所以临时只能在配置文件中增加 -->
+	<import resource="axis-config.xml"/>
 
 </beans>

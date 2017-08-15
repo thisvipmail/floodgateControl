@@ -111,7 +111,7 @@
                                 <td>{{data.type==='01'?"流量":"开度"}}</td>
                                 <td>{{data.conValue}}</td>
                                 <td>{{data.befLevel}} / {{data.aftLevel}}</td>
-                                <td>{{data.staTime}} —— {{data.endTime}}</td>
+                                <td>{{formatDate(data.staTime)}} —— {{formatDate(data.endTime)}}</td>
                                 <td style="padding: 0px;">
                                     <a class="btn btn-link btn-xs" style="font-size: 18px" v-on:click="stop(data)" v-bind:disabled="!data.state">急停</a>
                                     <a class="btn btn-link btn-xs" style="font-size: 18px" v-on:click="view(data)" >{{data.state}}查看</a>
@@ -138,18 +138,6 @@
         </div>
 <script type="text/javascript">
     function create(){
-        /* return Array.apply({},{length:64}).map(function(_,index){
-            return {
-                id:Math.random(),
-                name:'闸泵站'+index,
-                ssqd:['LN','LB','JD'][Math.round(Math.random()*2)],
-                type:Math.round(Math.random()),
-                value:Math.floor(Math.random()*100),
-                waterLevel:(Math.random()*100).toFixed(2)+' / '+(Math.random()*100).toFixed(2),
-                time:'2017-07-06 11:00 —— 2017-07-07 11:00',
-                state:Math.round(Math.random())
-            }
-        }) */
         let retData = null;
 		$.ajax({
 			url: "directController/query.mvc",
@@ -195,6 +183,9 @@
                             'background-color':'#dff0d8'
                         }
                     }
+                },
+                formatDate:function(date){
+					return util.timeFormat(date,'yyyy-MM-dd hh:mm')                	
                 },
                 stop:function(data){
                     window.event.preventDefault();
@@ -269,8 +260,9 @@
 		//定时刷新时间获取可执行指令
         setInterval(function () {
         	itemsData.forEach(function(item, index){
-                console.log(item.staTime - new Date());
-                debugger;
+                if(item.staTime > new Date().getTime() && item.staTime - new Date().getTime()<=60000){
+                    swal("该指令可以发给闸控系统去执行了");
+                }
             });
         },1000*60);
     });

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serviceGroup>
+	<service name="webServiceDemo">
+		<parameter name="ServiceObjectSupplier">
+			org.apache.axis2.extensions.spring.receivers.SpringServletContextObjectSupplier
+		</parameter>
+		<parameter name="SpringBeanName">
+			webServiceDemo
+		</parameter>
+		<parameter name="ServiceClass">
+			com.thtf.websvc.WebServiceDemo
+		</parameter>
+		<messageReceivers>
+			<messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
+				class="org.apache.axis2.rpc.receivers.RPCMessageReceiver" />
+			<messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-only"
+				class="org.apache.axis2.rpc.receivers.RPCInOnlyMessageReceiver" />
+			<!-- <messageReceiver class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/> -->
+		</messageReceivers>
+	</service>
+</serviceGroup>
