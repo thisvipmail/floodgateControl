@@ -67,6 +67,7 @@
                     <tr>
                         <th>#</th>
                         <th style="display: none">ID</th>
+                        <th style="display: none">pumpId</th>
                         <th>名称</th>
                         <th>目标流量
                             <small>(m³/s)</small>
@@ -97,6 +98,7 @@
                     <tbody>
                     <tr v-for="(item, index) in yhData">
                         <td>{{++index+page*15}}</td>
+                        <td style="display: none">{{item.id}}</td>
                         <td style="display: none">{{item.pumpId}}</td>
                         <td>{{getName(item.pumpId)}}</td>
                         <td>{{item.flow}}</td>
@@ -131,100 +133,94 @@
                 <form class="form-horizontal">
                     <div class="form-group">
                         <label for="name" class="col-sm-2 control-label">名称</label>
-
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" id="name" placeholder="名称" v-bind:value="item.name">
+                            <input type="text" class="form-control" id="name" placeholder="名称" v-model="item.name">
                         </div>
                         <label for="flow" class="col-sm-2 control-label">目标流量(m³/s)</label>
-
                         <div class="col-sm-4">
-                            <input type="number" class="form-control" id="flow" placeholder="目标流量(m³/s)"
-                                   v-bind:value="item.flow">
+                            <input type="number" class="form-control" id="flow" name="flow" placeholder="目标流量(m³/s)"
+                                   v-model="item.flow">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="waterLevel1" class="col-sm-2 control-label">上游水位(m)</label>
-
+                        <label for="befLevel" class="col-sm-2 control-label">上游水位(m)</label>
                         <div class="col-sm-4">
-                            <input type="number" class="form-control" id="waterLevel1" placeholder="上游水位(m)"
-                                   v-bind:value="item.waterLevel1">
+                            <input type="number" class="form-control" id="befLevel" name="befLevel" placeholder="上游水位(m)"
+                                   v-model="item.befLevel">
                         </div>
-                        <label for="waterLevel2" class="col-sm-2 control-label">下游水位(m)</label>
-
+                        <label for="aftLevel" class="col-sm-2 control-label">下游水位(m)</label>
                         <div class="col-sm-4">
-                            <input type="number" class="form-control" id="waterLevel2" placeholder="下游水位(m)"
-                                   v-bind:value="item.waterLevel2">
+                            <input type="number" class="form-control" id="aftLevel" name="aftLevel" placeholder="下游水位(m)"
+                                   v-model="item.aftLevel">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="nums" class="col-sm-2 control-label">机组开启台数</label>
 
                         <div class="col-sm-4">
-                            <input type="number" class="form-control" id="nums" placeholder="机组开启台数"
-                                   v-bind:value="item.nums">
+                            <input type="number" class="form-control" id="nums" name="nums" placeholder="机组开启台数"
+                                   v-model="item.nums">
                         </div>
                         <label for="angle1" class="col-sm-2 control-label">1#叶片角度(°)</label>
 
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" id="angle1" placeholder="1#叶片角度(°)"
-                                   v-bind:value="item.angle1">
+                            <input type="text" class="form-control" id="angle1" name="angle1" placeholder="1#叶片角度(°)"
+                                   v-model="item.angle1">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="angle2" class="col-sm-2 control-label">2#叶片角度(°)</label>
 
                         <div class="col-sm-4">
-                            <input type="number" class="form-control" id="angle2" placeholder="2#叶片角度(°)"
-                                   v-bind:value="item.angle2">
+                            <input type="number" class="form-control" id="angle2" name="angle2" placeholder="2#叶片角度(°)"
+                                   v-model="item.angle2">
                         </div>
                         <label for="angle3" class="col-sm-2 control-label">3#叶片角度(°)</label>
 
                         <div class="col-sm-4">
-                            <input type="number" class="form-control" id="angle3" placeholder="3#叶片角度(°)"
-                                   v-bind:value="item.angle3">
+                            <input type="number" class="form-control" id="angle3" name="angle3" placeholder="3#叶片角度(°)"
+                                   v-model="item.angle3">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="angle4" class="col-sm-2 control-label">4#叶片角度(°)</label>
 
                         <div class="col-sm-4">
-                            <input type="number" class="form-control" id="angle4" placeholder="4#叶片角度(°)"
-                                   v-bind:value="item.angle4">
+                            <input type="number" class="form-control" id="angle4" name="angle4" placeholder="4#叶片角度(°)"
+                                   v-model="item.angle4">
                         </div>
                         <label for="angle5" class="col-sm-2 control-label">5#叶片角度(°)</label>
 
                         <div class="col-sm-4">
-                            <input type="number" class="form-control" id="angle5" placeholder="5#叶片角度(°)"
-                                   v-bind:value="item.angle5">
+                            <input type="number" class="form-control" id="angle5" name="angle5" placeholder="5#叶片角度(°)"
+                                   v-model="item.angle5">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="price" class="col-sm-2 control-label">电量单价(元)</label>
 
                         <div class="col-sm-4">
-                            <input type="number" class="form-control" id="price" placeholder="电量单价(元)"
-                                   v-bind:value="item.price">
+                            <input type="number" class="form-control" id="price" name="price" placeholder="电量单价(元)"
+                                   v-model="item.price">
                         </div>
-                        <label for="long" class="col-sm-2 control-label">运行时长(小时)</label>
-
+                        <label for="term" class="col-sm-2 control-label">运行时长(小时)</label>
                         <div class="col-sm-4">
-                            <input type="number" class="form-control" id="long" placeholder="运行时长(小时)"
-                                   v-bind:value="item.long">
+                            <input type="number" class="form-control" id="term" name="term" placeholder="运行时长(小时)"
+                                   v-model="item.long">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="total" class="col-sm-2 control-label">预计电费(元)</label>
-
                         <div class="col-sm-4">
-                            <input type="number" class="form-control" id="total" placeholder="预计电费(元)"
-                                   v-bind:value="item.total">
+                            <input type="number" class="form-control" id="total" name="total" placeholder="预计电费(元)"
+                                   v-model="item.total">
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary">保存</button>
+                <button type="button" class="btn btn-primary" v-on:click="submitForm()">保存</button>
             </div>
         </div>
     </div>
@@ -375,7 +371,7 @@
      * 伪数据
      */
     let initData = function (page, nums, nodeId) {
-        return Array.apply({}, {length: nums}).map(function (_, index) {
+        /*return Array.apply({}, {length: nums}).map(function (_, index) {
             return {
                 id: Math.random(),
                 pumpId: ['LRLN010012', 'LRLN010052', 'LRLN010095', 'LRLN030015', 'LRLN040012', 'LRLN040052', 'LRLN050012'].slice(index % 7, index % 7 + 1)[0],
@@ -392,7 +388,20 @@
                 long: Math.floor(Math.random() * 1000),
                 total: Math.floor(Math.random() * 10000)
             }
+        });*/
+        let retData = "";
+        $.ajax({
+            url: "yhddController/query.mvc",
+            async: false,
+            type: "get",
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            data : {
+            }
+        }).success(function(data){
+            retData = data;
         });
+        return retData;
     };
     let p4 = Promise.resolve(
             initData(1, 15)
@@ -426,6 +435,7 @@
 
     let isPage = true, vue;
     Promise.all([p1, p2, p3, p4]).then(function ([arg,pumpData,flowKind,data]) {
+        console.log(data)
         pagination(100);
         vue = new Vue({
             el: '#vueDiv',
@@ -456,12 +466,13 @@
             oldTr = $(this);
             var tr = $(this).children();
             for (var i = 1; i < tr.length; i++) {
-                json[jsonKey[i]] = tr.eq(i).text();
+                json[jsonKey[i-1]] = tr.eq(i).text();
             }
+            console.log(json)
         })
     }
     const jsonKey = [
-        'id', 'pumpId', 'name', 'flow', 'waterLevel1', 'waterLevel2', 'nums', 'angle1', 'angle2', 'angle3', 'angle4', 'angle5', 'price', 'long', 'total'
+        'id', 'pumpId', 'name', 'flow', 'aftLevel', 'befLevel', 'nums', 'angle1', 'angle2', 'angle3', 'angle4', 'angle5', 'price', 'long', 'total'
     ];
 
     let modalVue = new Vue({
@@ -469,6 +480,20 @@
         data: {
             title: "",
             item: json
+        },
+        methods:{
+            submitForm: function () {
+                $.ajax({
+                    url: "yhddController/save.mvc",
+                    async: true,
+                    type: "post",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: 'json',
+                    data : JSON.stringify(modalVue.item)
+                }).success(function(){
+                    swal("submit success");
+                });
+            }
         }
     });
 

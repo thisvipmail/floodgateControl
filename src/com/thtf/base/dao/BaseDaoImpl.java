@@ -52,7 +52,7 @@ public class BaseDaoImpl<T> extends HibernateDaoSupport implements BaseDao<T> {
 	public T get(String entityName, String id) {
 		return ((T) this.getSessionFactory().getCurrentSession().get(entityName, id));
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<T> excuteHql(final int start, final int limit, final String queryString, final List params) {

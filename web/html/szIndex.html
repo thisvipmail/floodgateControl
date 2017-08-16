@@ -26,7 +26,7 @@
                 </div>
                 <div class="panel-body">
                     <span class="pull-left">时间：{{formatDate(data.time)}}</span>
-                    <span class="pull-right" v-bind:class="{'text-danger': data.level>'C' }">等级：{{data.level}}</span>
+                    <span class="pull-right" v-bind:class="{'text-danger': data.level>'C' }">等级：{{levelConvert(data.level)}}</span>
                 </div>
                 <table class="table table-bordered table-striped">
                     <thead>
@@ -42,7 +42,7 @@
                         <td>{{++index}}</td>
                         <td>{{item.name}}</td>
                         <td>{{item.value}}</td>
-                        <td>{{item.level}}</td>
+                        <td>{{levelConvert(item.level)}}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -391,6 +391,22 @@
         methods:{
             formatDate:function(date){
                 return util.timeFormat(date,'yyyy-MM-dd hh:mm')
+            },
+            levelConvert:function(level){
+                switch (level){
+                    case 'A':
+                        return "Ⅰ";
+                    case 'B':
+                        return "Ⅱ";
+                    case 'C':
+                        return "Ⅲ";
+                    case 'D':
+                        return "Ⅴ";
+                    case 'E':
+                        return "Ⅳ";
+                    default:
+                        return null
+                }
             }
         }
     });
@@ -408,32 +424,61 @@
         app.datas = data;
     });
 
-</script>
-
-<script type="text/javascript">
+    $('#myModal').on('show.bs.modal', function (event) {
+        var div = $(event.relatedTarget) // Button that triggered the modal
+        var title = div.html().trim();
+        //根据title查询近七天数据
+        myChart = echarts.init(document.getElementById('mainChart'));
+        Promise.resolve(
+                $.ajax({
+                    url: "wtlvController/queryList.mvc",
+                    async: true,
+                    type: "get",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: 'json',
+                    data : {
+                        name:title
+                    }
+                })
+        ).then(function(datas){
+            let data = new Array();
+            datas.forEach(function(item, index){
+                let arr = new Array();
+                arr.push(item.rownum);
+                arr.push(item.sw);
+                arr.push(item.gmsj);
+                arr.push(item.an);
+                arr.push(item.hzd);
+                arr.push(item.ddl);
+                arr.push(item.zn);
+                arr.push(item.rjy);
+                arr.push(item.p);
+                arr.push(item.ph);
+                arr.push(app.levelConvert(item.waterlevel));
+                data.push(arr);
+            });
+            option.series[0].data = data;
+            myChart.setOption(option);
+        });
+    });
+    $('#myModal').on('hidden.bs.modal', function (event) {
+        myChart.dispose();
+    });
     // 基于准备好的dom，初始化echarts实例
-    let myChart = echarts.init(document.getElementById('mainChart'));
-
-    let data = [
-        [1,55,9,56,0.46,18,6,"良"],
-        [2,25,11,21,0.65,34,9,"优"],
-        [3,56,7,63,0.3,14,5,"良"],
-        [4,33,7,29,0.33,16,6,"优"],
-        [5,42,24,44,0.76,40,16,"优"],
-        [6,82,58,90,1.77,68,33,"良"],
-        [7,74,49,77,1.46,48,27,"良"]
-
-    ];
+    let myChart = null;
 
     let schema = [
         {name: 'date', index: 0, text: '日期'},
-        {name: 'AQIindex', index: 1, text: 'AQI'},
-        {name: 'PM25', index: 2, text: 'PM2.5'},
-        {name: 'PM10', index: 3, text: 'PM10'},
-        {name: 'CO', index: 4, text: ' CO'},
-        {name: 'NO2', index: 5, text: 'NO2'},
-        {name: 'SO2', index: 6, text: 'SO2'},
-        {name: '等级', index: 7, text: '等级'}
+        {name: 'w01010', index: 1, text: '水温'},
+        {name: 'w01019', index: 2, text: '高锰酸盐指数'},
+        {name: 'w21003', index: 3, text: '氨氮'},
+        {name: 'w01003', index: 4, text: ' 浑浊度'},
+        {name: 'w01014', index: 5, text: '导电率'},
+        {name: 'w21001', index: 6, text: '总氮'},
+        {name: 'w01009', index: 7, text: '溶解氧'},
+        {name: 'w21011', index: 8, text: '总磷'},
+        {name: 'w01001', index: 9, text: 'PH值'},
+        {name: '等级', index: 10, text: '等级'}
     ];
 
     let lineStyle = {
@@ -457,15 +502,17 @@
         tooltip: {},
 
         parallelAxis: [
-            {dim: 0, name: schema[0].text, inverse: true, max: 7, nameLocation: 'start'},
+            {dim: 0, name: schema[0].text, inverse: true, nameLocation: 'start'},
             {dim: 1, name: schema[1].text},
             {dim: 2, name: schema[2].text},
             {dim: 3, name: schema[3].text},
             {dim: 4, name: schema[4].text},
             {dim: 5, name: schema[5].text},
             {dim: 6, name: schema[6].text},
-            {dim: 7, name: schema[7].text,
-                type: 'category', data: ['优', '良', '轻度污染', '中度污染', '重度污染', '严重污染']}
+            {dim: 7, name: schema[7].text},
+            {dim: 8, name: schema[8].text},
+            {dim: 9, name: schema[9].text},
+            {dim: 10, name: schema[10].text,type: 'category', data: ['Ⅰ', 'Ⅱ', 'Ⅲ', 'Ⅴ', 'Ⅳ']}
         ],
         parallel: {
             left: '5%',
@@ -505,13 +552,10 @@
                 name: '监测站',
                 type: 'parallel',
                 lineStyle: lineStyle,
-                data: data
+                data: []
             }
         ]
     };
-
-    // 使用刚指定的配置项和数据显示图表。
-    myChart.setOption(option);
 </script>
 </body>
 </html>

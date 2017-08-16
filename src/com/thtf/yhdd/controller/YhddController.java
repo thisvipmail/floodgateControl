@@ -1,9 +1,12 @@
 package com.thtf.yhdd.controller;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.thtf.base.controller.BaseController;
 import com.thtf.base.service.BaseService;
@@ -22,4 +25,9 @@ public class YhddController extends BaseController<YhddEntity>{
 		return yhddService;
 	}
 
+	@RequestMapping(value = "/query")
+	@ResponseBody
+	public List<YhddEntity> query(){
+		return yhddService.query();
+	}
 }

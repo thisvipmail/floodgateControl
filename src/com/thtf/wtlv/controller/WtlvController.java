@@ -10,12 +10,14 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.thtf.base.controller.BaseController;
 import com.thtf.base.service.BaseService;
 import com.thtf.wtlv.entity.WtlvDtlVo;
 import com.thtf.wtlv.entity.WtlvEntity;
+import com.thtf.wtlv.entity.WtlvRecord;
 import com.thtf.wtlv.entity.WtlvVo;
 import com.thtf.wtlv.service.WtlvService;
 
@@ -25,6 +27,9 @@ public class WtlvController extends BaseController<WtlvEntity>{
 
 	@Resource(name="wtlvService")
 	private WtlvService<WtlvEntity> wtlvService;
+	
+	@Resource(name="wtlvService")
+	private WtlvService<WtlvRecord> wtrdService;
 	
 	/**
 	 * 根据参数进行查询
@@ -51,6 +56,16 @@ public class WtlvController extends BaseController<WtlvEntity>{
 			wtlvList.add(it.next());
 		}
 		return wtlvList;
+	}
+	
+	/**
+	 * 根据参数进行查询
+	 */
+	@RequestMapping(value = "/queryList")
+	@ResponseBody
+	public List<WtlvRecord> queryList(@RequestParam(value = "name", required = true)String name){
+		List<WtlvRecord> list = wtrdService.queryList(name, WtlvRecord.class);
+		return list;
 	}
 
 	@Override
