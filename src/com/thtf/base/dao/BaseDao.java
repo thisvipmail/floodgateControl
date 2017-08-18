@@ -1,5 +1,6 @@
 package com.thtf.base.dao;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ public interface BaseDao<T> {
 	 * 增加
 	 * @param baseEntity
 	 */
-	public void save(T baseEntity);
+	public Serializable save(T baseEntity);
 	
 	/**
 	 * 删除
@@ -70,10 +71,29 @@ public interface BaseDao<T> {
 	public List<T> excuteHql(final int start, final int limit, final String queryString, final List params);
 	
 	/**
+	 * 执行hql语句
+	 * @param queryString
+	 * @param params
+	 * @param start
+	 * @param size
+	 * @return
+	 */
+	public List<T> excuteHql(final String queryString,final Map<String, Object> params, int start, int size);
+	
+	/**
+	 * 执行hql语句查询数量
+	 * @param queryString
+	 * @param params
+	 * @return
+	 */
+	public int excuteHqlCount(final String queryString,final Map<String, Object> params);
+	
+	/**
 	 * 执行hql语句查询数量
 	 * @param queryString
 	 * @param params
 	 * @return
 	 */
 	public int excuteHqlCount(final String queryString, final List params);
+
 }

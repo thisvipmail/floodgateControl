@@ -102,8 +102,8 @@
                         <td style="display: none">{{item.pumpId}}</td>
                         <td>{{getName(item.pumpId)}}</td>
                         <td>{{item.flow}}</td>
-                        <td>{{item.waterLevel1}}</td>
-                        <td>{{item.waterLevel2}}</td>
+                        <td>{{item.befLevel}}</td>
+                        <td>{{item.aftLevel}}</td>
                         <td>{{item.nums}}</td>
                         <td>{{item.angle1}}</td>
                         <td>{{item.angle2}}</td>
@@ -111,7 +111,7 @@
                         <td>{{item.angle4}}</td>
                         <td>{{item.angle5}}</td>
                         <td>{{item.price}}</td>
-                        <td>{{item.long}}</td>
+                        <td>{{item.term}}</td>
                         <td>{{item.total}}</td>
                     </tr>
                     </tbody>
@@ -134,12 +134,23 @@
                     <div class="form-group">
                         <label for="name" class="col-sm-2 control-label">名称</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" id="name" placeholder="名称" v-model="item.name">
+                            <select id="pumpSelectModel" class="selectpicker dropdown form-control"
+                                    :data-actions-box="actionBox" :data-size="dataSize"
+                                    v-model="item.pumpId">
+                                <option value="">请选择</option>
+                                <option v-for="data in pumpData" v-bind:value="data.id">
+                                    {{ data.text }}
+                                </option>
+                            </select>
                         </div>
                         <label for="flow" class="col-sm-2 control-label">目标流量(m³/s)</label>
                         <div class="col-sm-4">
-                            <input type="number" class="form-control" id="flow" name="flow" placeholder="目标流量(m³/s)"
-                                   v-model="item.flow">
+                            <select id="flowKindSelect" class="selectpicker dropdown form-control" :data-size="dataSize" v-model="item.flow">
+                                <option value="">请选择</option>
+                                <option v-for="data in flowKind" v-bind:value="data.id">
+                                    {{ data.text }}
+                                </option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group">
@@ -206,7 +217,7 @@
                         <label for="term" class="col-sm-2 control-label">运行时长(小时)</label>
                         <div class="col-sm-4">
                             <input type="number" class="form-control" id="term" name="term" placeholder="运行时长(小时)"
-                                   v-model="item.long">
+                                   v-model="item.term">
                         </div>
                     </div>
                     <div class="form-group">
@@ -301,8 +312,8 @@
                             <td>{{++index}}</td>
                             <td>{{getName(item.pumpId)}}</td>
                             <td>{{item.flow}}</td>
-                            <td>{{item.waterLevel1}}</td>
-                            <td>{{item.waterLevel2}}</td>
+                            <td>{{item.befLevel}}</td>
+                            <td>{{item.aftLevel}}</td>
                             <td>{{item.nums}}</td>
                             <td>{{item.angle1}}</td>
                             <td>{{item.angle2}}</td>
@@ -310,7 +321,7 @@
                             <td>{{item.angle4}}</td>
                             <td>{{item.angle5}}</td>
                             <td>{{item.price}}</td>
-                            <td>{{item.long}}</td>
+                            <td>{{item.term}}</td>
                             <td>{{item.total}}</td>
                         </tr>
                         </tbody>
@@ -335,7 +346,13 @@
                 loadTree("json/pumpTree.json", function (node) {
                     $("#page").page("destroy");
                     vue.yhData = initData(1, 15, node.id);
-                    pagination(15);
+                    /*if(oldTr){
+                        $(oldTr).toggleClass("success");
+                    }*/
+                    vue.$nextTick(function(){
+                        trClick();
+                    });
+                    pagination(vue.yhData.length);
                     vue.page = 0;
                 });
             })
@@ -371,24 +388,6 @@
      * 伪数据
      */
     let initData = function (page, nums, nodeId) {
-        /*return Array.apply({}, {length: nums}).map(function (_, index) {
-            return {
-                id: Math.random(),
-                pumpId: ['LRLN010012', 'LRLN010052', 'LRLN010095', 'LRLN030015', 'LRLN040012', 'LRLN040052', 'LRLN050012'].slice(index % 7, index % 7 + 1)[0],
-                flow: [80, 85, 90, 95, 100, 105, 110].slice(index % 7, index % 7 + 1)[0],
-                waterLevel1: Math.floor(Math.random() * 50),
-                waterLevel2: Math.floor(Math.random() * 50),
-                nums: Math.floor(Math.random() * 3),
-                angle1: Math.floor(Math.random() * 90),
-                angle2: Math.floor(Math.random() * 90),
-                angle3: Math.floor(Math.random() * 90),
-                angle4: Math.floor(Math.random() * 90),
-                angle5: Math.floor(Math.random() * 90),
-                price: (Math.random() * 10).toFixed(2),
-                long: Math.floor(Math.random() * 1000),
-                total: Math.floor(Math.random() * 10000)
-            }
-        });*/
         let retData = "";
         $.ajax({
             url: "yhddController/query.mvc",
@@ -397,6 +396,9 @@
             contentType: "application/json; charset=utf-8",
             dataType: 'json',
             data : {
+                page:page,
+                limit:nums,
+                nodeId:nodeId
             }
         }).success(function(data){
             retData = data;
@@ -407,6 +409,17 @@
             initData(1, 15)
     );
 
+    let p5 = Promise.resolve(
+            $.ajax({
+                url: "yhddController/count.mvc",
+                async: false,
+                type: "get",
+                contentType: "text/html; charset=utf-8",
+                dataType: 'json',
+                data : {
+                }
+            })
+    );
     /**
      * 分页
      * @type {boolean}
@@ -433,10 +446,9 @@
         });
     };
 
-    let isPage = true, vue;
-    Promise.all([p1, p2, p3, p4]).then(function ([arg,pumpData,flowKind,data]) {
-        console.log(data)
-        pagination(100);
+    let isPage = true, vue,modalVue;
+    Promise.all([p1, p2, p3, p4, p5]).then(function ([arg,pumpData,flowKind,data,count]) {
+        pagination(count);
         vue = new Vue({
             el: '#vueDiv',
             data: {
@@ -454,13 +466,74 @@
             }
         });
         trClick();
+        modalVue = new Vue({
+            el: "#modal",
+            data: {
+                title: "",
+                pumpData:pumpData.nodes,
+                flowKind:flowKind.nodes,
+                actionBox:true,
+                dataSize:5,
+                item: json
+            },
+            methods:{
+                submitForm: function () {
+                    let url = "yhddController/update.mvc";
+                    if(this.item.id === null){
+                        url = "yhddController/save.mvc";
+                    }
+                    $.ajax({
+                        url: url,
+                        async: true,
+                        type: "post",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: 'json',
+                        data : JSON.stringify(this.item)
+                    }).success(function(data){
+                        swal({
+                            title:"提交成功",
+                            type: "success",
+                        }, function() {
+                            $('#modal').modal('hide');
+                        });
+                        if(data === "SUCCESS"){
+                            //修改操作
+                            vue.yhData.forEach(function (item, index) {
+                                if(item.id === json.id){
+                                    debugger;
+                                    vue.yhData.splice(index,1,modalVue.item);
+                                    return;
+                                }
+                            });
+                        }else{
+                            //增加操作
+                            modalVue.item.id = data.id;
+                            vue.yhData.splice(0,0,modalVue.item);
+                        }
+
+                    });
+                }
+            }
+        });
+        $("#pumpSelectModel").selectpicker('refresh');
+        $("#flowKindSelect").selectpicker('refresh');
+
+        //窗口显示时，增加处理：给select赋值
+        $('#modal').on('show.bs.modal', function (event) {
+            $('#flowKindSelect').selectpicker('val', json.flow)
+            $('#pumpSelectModel').selectpicker('val', json.pumpId)
+        });
     });
-    let json = {};
+
+    let json = {},oldTr;
     let trClick = function () {
-        let oldTr = "";
+        //oldTr ? oldTr.attr("class","") : "";
+        if(oldTr){
+            $(oldTr).toggleClass("success");
+            oldTr = null;
+            json = {};
+        }
         $('tbody tr').click(function () {
-            /* oldTr ? oldTr.attr("class","") : "";
-             $(this).attr("class","success");*/
             $(oldTr).toggleClass("success");
             $(this).toggleClass("success");
             oldTr = $(this);
@@ -471,46 +544,30 @@
             console.log(json)
         })
     }
+
     const jsonKey = [
-        'id', 'pumpId', 'name', 'flow', 'aftLevel', 'befLevel', 'nums', 'angle1', 'angle2', 'angle3', 'angle4', 'angle5', 'price', 'long', 'total'
+        'id', 'pumpId', 'name', 'flow', 'aftLevel', 'befLevel', 'nums', 'angle1', 'angle2', 'angle3', 'angle4', 'angle5', 'price', 'term', 'total'
     ];
-
-    let modalVue = new Vue({
-        el: "#modal",
-        data: {
-            title: "",
-            item: json
-        },
-        methods:{
-            submitForm: function () {
-                $.ajax({
-                    url: "yhddController/save.mvc",
-                    async: true,
-                    type: "post",
-                    contentType: "application/json; charset=utf-8",
-                    dataType: 'json',
-                    data : JSON.stringify(modalVue.item)
-                }).success(function(){
-                    swal("submit success");
-                });
-            }
-        }
-    });
-
     function save() {
         if (json && !$.isEmptyObject(json)) {
             modalVue.title = "复制一条数据";
-            console.log(json);
             modalVue.item = {};
+            json.id=null;
             modalVue.item = json;
         } else {
             modalVue.title = "添加一条数据";
+            modalVue.item = {};
         }
+        /*if(oldTr){
+            $(oldTr).toggleClass("success");
+        }*/
+        vue.$nextTick(function(){
+            trClick();
+        });
         $('#modal').modal({backdrop: 'static', keyboard: false});
-    }
-    ;
+    };
+
     function change() {
-        console.log(json);
         if (json && !$.isEmptyObject(json)) {
             modalVue.title = "修改一条数据";
             modalVue.item = {};
@@ -522,35 +579,35 @@
     }
     ;
     function remove() {
-        swal({
-                    title: "确认删除?",
-                    type: "error",
-                    showCancelButton: true,
-                    confirmButtonClass: "btn-danger",
-                    cancelButtonText: "否",
-                    confirmButtonText: "是",
-                    closeOnConfirm: false
-                },
-                function () {
-                    swal("删除成功", "", "success");
-                }
-        );
-    }
-    ;
+        if (json && !$.isEmptyObject(json)) {
+            swal({
+                        title: "确认删除?",
+                        type: "error",
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-danger",
+                        cancelButtonText: "否",
+                        confirmButtonText: "是",
+                        closeOnConfirm: false
+                    },
+                    function () {
+                        $.ajax({
+                            url: "yhddController/delete.mvc",
+                            async: true,
+                            type: "post",
+                            contentType: "application/json; charset=utf-8",
+                            dataType: 'json',
+                            data : JSON.stringify(json)
+                        }).success(function(){
+                            swal("删除成功", "", "success");
+                        });
+                    }
+            );
+        } else {
+            swal("请选择一条记录");
+        }
+    };
 
 </script>
-<!--<script>
-    function bootstrapTable(){
-        $('#tableContent').bootstrapTable({});
-        $('#tableContent').bootstrapTable( 'resetView' , {height: $(".div-height-2").height()} );
-        $(window).resize(function(){
-            $('#tableContent').bootstrapTable( 'resetView' , {height: $(".div-height-2").height()} );
-        });
-        $('#tableContent').on('click-row.bs.table', function (row,$element) {
-            console.log($element);
-        });
-    }
-</script>-->
 <script>
     let app = "";
     let queryFun = function () {
@@ -718,62 +775,71 @@
         option.series[6].data = [];
         option.xAxis[0].data = [];
     };
-    let initChart = function () {
-        let length = app.query.pump.length;
+    let initChart = function (pumpsData) {
+        let length = pumpsData.length;
         option.series[0].data = option.series[0].data.concat((function () {
             let res = [];
-            let len = length;
-            while (len--) {
-                res.push((Math.random() * 5).toFixed(0) - 0);
+            let len = 0;
+            while (len++<length) {
+                res.push(app.queryList[len-1].nums);
             }
             return res;
         })());
         option.series[1].data = option.series[1].data.concat((function () {
             var res = [];
-            let len = length;
-            while (len--) {
-                res.push(Math.round(Math.random() * 1000));
+            let len = 0;
+            while (len++<length) {
+                res.push(app.queryList[len-1].term);
             }
             return res;
         })());
         option.series[2].data = option.series[2].data.concat((function () {
             var res = [];
-            let len = length;
-            while (len--) {
-                res.push((Math.random() * 5000).toFixed(2) - 0);
+            let len = 0;
+            while (len++<length) {
+                res.push(app.queryList[len-1].total);
             }
             return res;
         })());
         option.series[3].data = option.series[3].data.concat((function () {
             var res = [];
-            let len = length;
-            while (len--) {
-                res.push((Math.random() * 50).toFixed(2) - 0);
+            let len = 0;
+            while (len++<length) {
+                res.push(app.queryList[len-1].befLevel);
             }
             return res;
         })());
         option.series[4].data = option.series[4].data.concat((function () {
             var res = [];
-            let len = length;
-            while (len--) {
-                res.push((Math.random() * 50).toFixed(2) - 0);
+            let len = 0;
+            while (len++<length) {
+                res.push(app.queryList[len-1].aftLevel);
             }
             return res;
         })());
         option.series[5].data = option.series[5].data.concat((function () {
             var res = [];
-            let len = length;
-            while (len--) {
-                res.push((Math.random() * 50).toFixed(2) - 0);
-            }
+            debugger;
+            pumpsData.forEach(function(item,index){
+                 app.pumpData.forEach(function (currentValue, index, arr) {
+                    if(item == currentValue.id){
+                        res.push(currentValue.dwl);
+                        return;
+                    }
+                });
+            });
             return res;
         })());
         option.series[6].data = option.series[6].data.concat((function () {
             var res = [];
-            let len = length;
-            while (len--) {
-                res.push((Math.random() * 50).toFixed(2) - 0);
-            }
+            pumpsData.forEach(function(item,index){
+                app.pumpData.forEach(function (currentValue, index, arr) {
+                    if(item == currentValue.id){
+                        res.push(currentValue.ddwl);
+                        return;
+                    }
+                });
+            });
             return res;
         })());
         option.xAxis[0].data = option.xAxis[0].data.concat((function(){
@@ -786,8 +852,21 @@
         myChart.setOption(option);
     };
     function add() {
-        app.queryList = app.queryList.concat(queryFun());
-        initChart();
+        let pumpsData = app.query.pump;
+        $.ajax({
+            url: "yhddController/queryByCon.mvc",
+            async: true,
+            type: "get",
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            data : {
+                pumps:app.query.pump,
+                flow:app.query.flow
+            }
+        }).success(function(data){
+            app.queryList = app.queryList.concat(data);
+            initChart(pumpsData);
+        });
         disabledOption();
         app.query.pump = [];
     };

@@ -1,5 +1,6 @@
 package com.thtf.base.dao;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -22,8 +23,8 @@ public class BaseDaoImpl<T> extends HibernateDaoSupport implements BaseDao<T> {
 	}
 
 	@Override
-	public void save(T baseEntity) {
-		this.getSessionFactory().getCurrentSession().save(baseEntity);
+	public Serializable save(T baseEntity) {
+		return this.getSessionFactory().getCurrentSession().save(baseEntity);
 	}
 
 	@Override
@@ -74,7 +75,7 @@ public class BaseDaoImpl<T> extends HibernateDaoSupport implements BaseDao<T> {
 		list = query.list();
 		return list;
 	}
-
+	
 	@Override
 	public int excuteHqlCount(final String queryString, final List params) {
 		final Query query = this.getSessionFactory().getCurrentSession().createQuery(queryString);
@@ -83,8 +84,53 @@ public class BaseDaoImpl<T> extends HibernateDaoSupport implements BaseDao<T> {
 				query.setParameter(i, params.get(i));
 			}
 		}
-		return (Integer) query.uniqueResult();
+		Long size = (Long) query.uniqueResult();
+		return size.intValue();
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<T> excuteHql(final String queryString,final Map<String, Object> params, int start, int size) {
+		List<T> list = null;
+		Query query = this.getSessionFactory().getCurrentSession().createQuery(queryString);
+
+		if (params != null) {
+			Set<Entry<String, Object>> paramSet = params.entrySet();
+			for (Entry<String, Object> entry : paramSet) {
+				if (entry.getValue() instanceof List) {
+					query.setParameterList(entry.getKey(), (List) entry.getValue());
+				} else {
+					query.setParameter(entry.getKey(), entry.getValue());
+				}
+			}
+		}
+		if (start != -1) {
+			query.setFirstResult(start);
+		}
+		if (size != -1) {
+			query.setFetchSize(size);
+		}
+		list = query.list();
+		return list;
+	}
+	
+	@Override
+	public int excuteHqlCount(String queryString, Map<String, Object> params) {
+		Query query = this.getSessionFactory().getCurrentSession().createQuery(queryString);
+		if (params != null) {
+			Set<Entry<String, Object>> paramSet = params.entrySet();
+			for (Entry<String, Object> entry : paramSet) {
+				if (entry.getValue() instanceof List) {
+					query.setParameterList(entry.getKey(), (List) entry.getValue());
+				} else {
+					query.setParameter(entry.getKey(), entry.getValue());
+				}
+			}
+		}
+		Long size = (Long) query.uniqueResult();
+		return size.intValue();
+	}
+	
 
 	@SuppressWarnings("unchecked")
 	@Override

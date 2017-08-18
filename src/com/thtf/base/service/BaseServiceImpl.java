@@ -1,5 +1,6 @@
 package com.thtf.base.service;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -12,8 +13,8 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 
 	@Override
 	@Transactional
-	public void save(T baseEntity) {
-		this.getBaseDao().save(baseEntity);
+	public Serializable save(T baseEntity) {
+		return this.getBaseDao().save(baseEntity);
 	}
 
 	@Override
@@ -73,6 +74,16 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 		return getBaseDao().excuteHqlCount(queryString, params);
 	}
 	
+	@Override
+	@Transactional
+	public List<T> excuteHql(final String queryString,final Map<String, Object> params, int start, int size){
+		return getBaseDao().excuteHql(queryString, params,start,size);
+	}
 	
+	@Override
+	@Transactional
+	public int excuteHqlCount(final String queryString,final Map<String, Object> params){
+		return getBaseDao().excuteHqlCount(queryString, params);
+	}
 	
 }
