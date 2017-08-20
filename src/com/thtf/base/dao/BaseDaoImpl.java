@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.transform.Transformers;
 import org.hibernate.type.Type;
@@ -56,6 +57,50 @@ public class BaseDaoImpl<T> extends HibernateDaoSupport implements BaseDao<T> {
 	
 	@SuppressWarnings("unchecked")
 	@Override
+	public int executeUpdate(String hql,List params,int type){
+		
+		Session session = this.getSessionFactory().getCurrentSession();
+		Query query = null;
+		if(type ==0 ){//hql
+			query = session.createQuery(hql);
+		}else{//sql
+			query = session.createSQLQuery(hql);
+		}
+		
+		if (params != null) {
+			for (int i = 0; i < params.size(); i++) {
+				query.setParameter(i, params.get(i));
+			}
+		}
+		return query.executeUpdate();
+	}
+	
+	@Override
+	public int executeUpdate(String hql,Map<String, Object> params,int type){
+		
+		Session session = this.getSessionFactory().getCurrentSession();
+		Query query = null;
+		if(type ==0 ){//hql
+			query = session.createQuery(hql);
+		}else{//sql
+			query = session.createSQLQuery(hql);
+		}
+		
+		if (params != null) {
+			Set<Entry<String, Object>> paramSet = params.entrySet();
+			for (Entry<String, Object> entry : paramSet) {
+				if (entry.getValue() instanceof List) {
+					query.setParameterList(entry.getKey(), (List) entry.getValue());
+				} else {
+					query.setParameter(entry.getKey(), entry.getValue());
+				}
+			}
+		}
+		return query.executeUpdate();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
 	public List<T> excuteHql(final int start, final int limit, final String queryString, final List params) {
 		List<T> list = null;
 		final Query query = this.getSessionFactory().getCurrentSession().createQuery(queryString);
@@ -85,7 +130,7 @@ public class BaseDaoImpl<T> extends HibernateDaoSupport implements BaseDao<T> {
 			}
 		}
 		Long size = (Long) query.uniqueResult();
-		return size.intValue();
+		return size != null ? size.intValue() : 0;
 	}
 	
 	@SuppressWarnings("unchecked")

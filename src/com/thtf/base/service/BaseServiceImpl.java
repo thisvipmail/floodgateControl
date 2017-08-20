@@ -85,5 +85,16 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 	public int excuteHqlCount(final String queryString,final Map<String, Object> params){
 		return getBaseDao().excuteHqlCount(queryString, params);
 	}
+
+	@Override
+	public int executeUpdate(String hql, List params, int type) {
+		
+		return getBaseDao().executeUpdate(hql, params, type);
+	}
+
+	@Override
+	public int executeUpdate(String hql, Map<String, Object> params, int type) {
+		return getBaseDao().executeUpdate(hql, params, type);
+	}
 	
 }

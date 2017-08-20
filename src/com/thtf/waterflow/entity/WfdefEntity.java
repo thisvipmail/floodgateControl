@@ -2,8 +2,11 @@ package com.thtf.waterflow.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  * 损水系数定义
@@ -19,8 +22,16 @@ public class WfdefEntity {
 	 */
 	
 	@Id
+	@GeneratedValue(generator="system-uuid" )
+	@GenericGenerator(name="system-uuid",strategy="uuid")
 	@Column(name="id",columnDefinition="char(32)")
 	private String id;
+	
+	/**
+	 * 分类
+	 */
+	@Column(name="kind",columnDefinition="varchar2(5)")
+	private String kind;
 	
 	/**
 	 * 工程编码
@@ -224,6 +235,14 @@ public class WfdefEntity {
 
 	public void setDec(float dec) {
 		this.dec = dec;
+	}
+
+	public String getKind() {
+		return kind;
+	}
+
+	public void setKind(String kind) {
+		this.kind = kind;
 	}
 	
 	

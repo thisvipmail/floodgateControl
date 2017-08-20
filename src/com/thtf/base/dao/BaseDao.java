@@ -96,4 +96,22 @@ public interface BaseDao<T> {
 	 */
 	public int excuteHqlCount(final String queryString, final List params);
 
+	/**
+	 * update
+	 * @param hql
+	 * @param params
+	 * @param type 0:hql,1:sql
+	 * @return
+	 */
+	public int executeUpdate(String hql, List params, int type);
+
+	/**
+	 * update
+	 * @param hql
+	 * @param params
+	 * @param type 0:hql,1:sql
+	 * @return
+	 */
+	public int executeUpdate(String hql, Map<String, Object> params, int type);
+
 }

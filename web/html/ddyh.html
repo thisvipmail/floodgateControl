@@ -269,8 +269,8 @@
                             </label>-->
                             <select class="selectpicker dropdown" :data-size="dataSize"
                                     :data-selected-text-format="selectFormat" v-model="query.flow">
-                                <option v-for="data in flowRadio" v-bind:value="data">
-                                    {{ data}}（m³/s）
+                                <option v-for="data in flowRadio" v-bind:value="data.id">
+                                    {{ data.text}}
                                 </option>
                             </select>
                         </div>
@@ -346,12 +346,6 @@
                 loadTree("json/pumpTree.json", function (node) {
                     $("#page").page("destroy");
                     vue.yhData = initData(1, 15, node.id);
-                    /*if(oldTr){
-                        $(oldTr).toggleClass("success");
-                    }*/
-                    vue.$nextTick(function(){
-                        trClick();
-                    });
                     pagination(vue.yhData.length);
                     vue.page = 0;
                 });
@@ -446,7 +440,7 @@
         });
     };
 
-    let isPage = true, vue,modalVue;
+    let isPage = true, vue,modalVue,tableSelect;
     Promise.all([p1, p2, p3, p4, p5]).then(function ([arg,pumpData,flowKind,data,count]) {
         pagination(count);
         vue = new Vue({
@@ -463,9 +457,16 @@
                         }
                     })[0].text;
                 }
+            },
+            watch:{
+                yhData:{
+                    handler:function(val,oldVal){
+                        tableSelect.clearClickRow();
+                    }, deep:true
+                }
             }
         });
-        trClick();
+        tableSelect = new tableSelectUtil("#vueDiv");
         modalVue = new Vue({
             el: "#modal",
             data: {
@@ -474,12 +475,12 @@
                 flowKind:flowKind.nodes,
                 actionBox:true,
                 dataSize:5,
-                item: json
+                item: []
             },
             methods:{
                 submitForm: function () {
                     let url = "yhddController/update.mvc";
-                    if(this.item.id === null){
+                    if(!this.item.id){
                         url = "yhddController/save.mvc";
                     }
                     $.ajax({
@@ -499,16 +500,15 @@
                         if(data === "SUCCESS"){
                             //修改操作
                             vue.yhData.forEach(function (item, index) {
-                                if(item.id === json.id){
-                                    debugger;
-                                    vue.yhData.splice(index,1,modalVue.item);
+                                if(item.id === tableSelect.getClickRowData().id){
+                                    vue.yhData.splice(index,1,JSON.parse(JSON.stringify(modalVue.item)));
                                     return;
                                 }
                             });
                         }else{
                             //增加操作
                             modalVue.item.id = data.id;
-                            vue.yhData.splice(0,0,modalVue.item);
+                            vue.yhData.splice(0,0,JSON.parse(JSON.stringify(modalVue.item)));
                         }
 
                     });
@@ -520,58 +520,59 @@
 
         //窗口显示时，增加处理：给select赋值
         $('#modal').on('show.bs.modal', function (event) {
-            $('#flowKindSelect').selectpicker('val', json.flow)
-            $('#pumpSelectModel').selectpicker('val', json.pumpId)
+            $('#flowKindSelect').selectpicker('val', tableSelect.getClickRowData().flow)
+            $('#pumpSelectModel').selectpicker('val', tableSelect.getClickRowData().pumpId)
         });
     });
 
-    let json = {},oldTr;
-    let trClick = function () {
-        //oldTr ? oldTr.attr("class","") : "";
-        if(oldTr){
-            $(oldTr).toggleClass("success");
-            oldTr = null;
-            json = {};
-        }
-        $('tbody tr').click(function () {
-            $(oldTr).toggleClass("success");
-            $(this).toggleClass("success");
-            oldTr = $(this);
-            var tr = $(this).children();
-            for (var i = 1; i < tr.length; i++) {
-                json[jsonKey[i-1]] = tr.eq(i).text();
+    let tableSelectUtil = function (selector) {
+        //行json数据
+        let json = {},selectRowIndex;
+        //注册行点击事件
+        $(selector).on("click",function(e){
+            if(e.target.tagName==="TD"){
+                $("#vueDiv > div.div-height.div-height-2 > table > tbody > tr").removeClass("success");
+                $(e.target).parent().addClass("success");
+                let tr = $(e.target).parent().children();
+                for (let i = 1; i < tr.length; i++) {
+                    json[jsonKey[i-1]] = tr.eq(i).text();
+                }
+                console.log(json);
+                selectRowIndex = $(e.target).parent().children().eq(0).text();
             }
-            console.log(json)
-        })
-    }
-
+        });
+        this.getClickRowData = function(){
+            return json;
+        };
+        this.getClickRowIndex = function (){
+            return selectRowIndex;
+        };
+        this.clearClickRow = function(){
+            json = [],selectRowIndex = null;
+            $("#vueDiv > div.div-height.div-height-2 > table > tbody > tr").removeClass("success");
+        };
+    };
     const jsonKey = [
-        'id', 'pumpId', 'name', 'flow', 'aftLevel', 'befLevel', 'nums', 'angle1', 'angle2', 'angle3', 'angle4', 'angle5', 'price', 'term', 'total'
+        'id', 'pumpId', 'name', 'flow', 'befLevel', 'aftLevel', 'nums', 'angle1', 'angle2', 'angle3', 'angle4', 'angle5', 'price', 'term', 'total'
     ];
     function save() {
-        if (json && !$.isEmptyObject(json)) {
+        if (tableSelect.getClickRowData() && !$.isEmptyObject(tableSelect.getClickRowData())) {
             modalVue.title = "复制一条数据";
             modalVue.item = {};
-            json.id=null;
-            modalVue.item = json;
+            tableSelect.getClickRowData().id=null;
+            modalVue.item = tableSelect.getClickRowData();
         } else {
             modalVue.title = "添加一条数据";
             modalVue.item = {};
         }
-        /*if(oldTr){
-            $(oldTr).toggleClass("success");
-        }*/
-        vue.$nextTick(function(){
-            trClick();
-        });
         $('#modal').modal({backdrop: 'static', keyboard: false});
     };
 
     function change() {
-        if (json && !$.isEmptyObject(json)) {
+        if (tableSelect.getClickRowData() && !$.isEmptyObject(tableSelect.getClickRowData())) {
             modalVue.title = "修改一条数据";
             modalVue.item = {};
-            modalVue.item = json;
+            modalVue.item = tableSelect.getClickRowData();
             $('#modal').modal({backdrop: 'static', keyboard: false});
         } else {
             swal("请选择一条记录");
@@ -579,7 +580,7 @@
     }
     ;
     function remove() {
-        if (json && !$.isEmptyObject(json)) {
+        if (tableSelect.getClickRowData() && !$.isEmptyObject(tableSelect.getClickRowData())) {
             swal({
                         title: "确认删除?",
                         type: "error",
@@ -596,9 +597,11 @@
                             type: "post",
                             contentType: "application/json; charset=utf-8",
                             dataType: 'json',
-                            data : JSON.stringify(json)
+                            data : JSON.stringify(tableSelect.getClickRowData())
                         }).success(function(){
                             swal("删除成功", "", "success");
+                            //从列表删除
+                            vue.yhData.splice(tableSelect.getClickRowIndex()-1,1);
                         });
                     }
             );
@@ -819,7 +822,6 @@
         })());
         option.series[5].data = option.series[5].data.concat((function () {
             var res = [];
-            debugger;
             pumpsData.forEach(function(item,index){
                  app.pumpData.forEach(function (currentValue, index, arr) {
                     if(item == currentValue.id){
@@ -885,6 +887,14 @@
                 dataType: 'json'
             })
     );
+    let p1 = Promise.resolve(
+            $.ajax({
+                url: "json/flowKind.json",
+                type: "get",
+                async: false,
+                dataType: 'json'
+            })
+    );
     let initOption = function () {
         $(".selectpicker").find("option:disabled").each(function (index, item) {
             $(item).attr('disabled',false);
@@ -892,7 +902,7 @@
         //$('.selectpicker').selectpicker('refresh');
     }
     function ddyh() {
-        p2.then(function (pumpData) {
+        Promise.all([p1,p2]).then(function ([flowKind,pumpData]) {
             if(!app){
                 app = new Vue({
                     el: "#fxModal",
@@ -902,7 +912,7 @@
                             flow: 60
                         },
                         pumpData:pumpData.nodes,
-                        flowRadio:[60,65,70,75,80,85,90,95,100,105,110,120],
+                        flowRadio:flowKind.nodes,
                         queryList: [],
                         actionBox:true,
                         dataSize:5,
