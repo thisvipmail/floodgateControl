@@ -159,13 +159,13 @@
     let getData = initzlData();
 
     let promise = new Promise(function(resolve, reject) {
+        util.showWaiting();
         var object = getData.next();
         resolve(object.value);
     });
 
     promise.then(function (data) {
         let itemsData = data;
-        console.log(data);
         let app = new Vue({
             el:'#div-zl',
             data:{
@@ -210,6 +210,30 @@
                 view:function(data){
                     window.event.preventDefault();
                     //发给闸控系统
+                    $.ajax({
+                        url: "webDriverController/getIps.mvc",
+                        async: true,
+                        type: "get",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: 'json',
+                        data : {
+                        }
+                    }).success(function(ipData){
+                        ipData.forEach(function(item,index){
+                            $.ajax({
+                                url: "http://"+item.ip+":8080/floodgateControl/webDriverController/nvgt.mvc",
+                                async: true,
+                                type: "get",
+                                contentType: "text/html; charset=utf-8",
+                                dataType: 'jsonp',
+                                data : {
+                                    fgps:data.instructCode
+                                }
+                            });
+                        });
+
+                    });
+
                     alert("系统联动，开发准备中......");
                 },
                 sort: function () {
@@ -265,8 +289,17 @@
                 }
             });
         },1000*60);
+        util.hideWaiting();
     });
 
+    Promise.resolve(
+            $.ajax({
+                url: "json/flowKind.json",
+                type: "get",
+                async: false,
+                dataType: 'json'
+            })
+    );
 </script>
 </body>
 </html>

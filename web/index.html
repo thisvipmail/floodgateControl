@@ -169,5 +169,31 @@
     }
     Vue.config.ignoredElements = ['data-actions-box','data-size','data-selected-text-format'];
 </script>
+<script>
+    //初始化各工作台首页
+    $.ajax({
+        url: "webDriverController/getIps.mvc",
+        async: true,
+        type: "get",
+        contentType: "application/json; charset=utf-8",
+        dataType: 'json',
+        data : {
+        }
+    }).success(function(ipData){
+        ipData.forEach(function(item,index){
+            $.ajax({
+                url: "http://"+item.ip+":8080/floodgateControl/webDriverController/openBrowser.mvc",
+                async: true,
+                type: "get",
+                contentType: "text/html; charset=utf-8",
+                dataType: 'jsonp',
+                data : {
+                    url:item.indexPage
+                }
+            });
+        });
+
+    });
+</script>
 </body>
 </html>

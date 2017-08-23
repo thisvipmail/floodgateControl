@@ -3,29 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>工作台（水质）</title>
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-theme.css" rel="stylesheet">
+    <link href="css/docs.css" rel="stylesheet">
+    <script src="js/jquery-1.11.2.min.js" ></script>
+    <script src="js/bootstrap.js" ></script>
+    <script src="js/vue.js" ></script>
+    <script src="js/echarts.min.js"></script>
+    <script src="js/Util.js" ></script>
     <style>
         .div-height{
-            height: calc(100vh - 110px - 10px);
-            overflow-y: scroll;
-            overflow-x: hidden;
-        }
-        @media (min-height: 1080px) {
-            .div-height {
-                overflow-y: hidden;
-            }
+            height: calc((100vh - 130px) / 2);
         }
     </style>
 </head>
 <body>
-<div style="padding-top: 10px" class="container-fluid">
-    <div id="div_sz" class="row div-height">
-        <div class="col-lg-4 col-sm-6 col-xs-12 paddingRightNull" v-for="data in datas">
+<div id="div_sz" class="container-fluid">
+    <div class="row">
+        <div class="col-lg-4 col-sm-6 col-xs-12 div-height" v-for="data in datas">
             <div class="panel panel-primary">
-                <div class="panel-heading" data-toggle="modal" data-target="#myModal">
-                    {{data.name}}
-                </div>
-                <div class="panel-body">
-                    <span class="pull-left">时间：{{formatDate(data.time)}}</span>
+                <div v-bind:id="data.name" class="panel-heading" data-toggle="modal" data-target="#myModal">
+                    <span id="title">{{data.name}}</span>
+                    <span>（时间：{{formatDate(data.time)}}）</span>
                     <span class="pull-right" v-bind:class="{'text-danger': data.level>'C' }">等级：{{levelConvert(data.level)}}</span>
                 </div>
                 <table class="table table-bordered table-striped">
@@ -49,7 +48,34 @@
             </div>
         </div>
     </div>
-
+    <div class="row">
+        <div class="col-lg-4" v-for="index_1 in 3">
+            <table class="table table-bordered bg-warning" style="margin-bottom: 0px;">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>监测项目</th>
+                    <th>1级</th>
+                    <th>2级</th>
+                    <th>3级</th>
+                    <th>4级</th>
+                    <th>5级</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(data,index) in items" v-if="Math.floor(index/2)===index_1-1">
+                    <td>{{++index}}</td>
+                    <td>{{data.name}}</td>
+                    <td>{{data.leval1}}</td>
+                    <td>{{data.leval2}}</td>
+                    <td>{{data.leval3}}</td>
+                    <td>{{data.leval4}}</td>
+                    <td>{{data.leval5}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
     <div class="modal fade" id="myModal">
         <div class="modal-dialog" style="width: 1002px">
             <div class="modal-content" >
@@ -67,13 +93,64 @@
             </div>
         </div>
     </div>
-
 </div>
+<input type="text" class="form-control" id="text">
+<button type="button" class="btn btn-default" id="btn" onclick="showModal($('#text').val())">button</button>
 <script type="text/javascript">
     let app = new Vue({
         el:'#div_sz',
         data:{
             datas:[
+            ],
+            items:[
+                {
+                    name:'总氮',
+                    leval1:'0~0.2',
+                    leval2:'0.2~0.5',
+                    leval3:'0.5~1.0',
+                    leval4:'1.0~1.5',
+                    leval5:'1.5~2.0'
+                },
+                {
+                    name:'ph',
+                    leval1:'6~9',
+                    leval2:'6~9',
+                    leval3:'6~9',
+                    leval4:'6~9',
+                    leval5:'6~9'
+                },
+                {
+                    name:'溶解氧',
+                    leval1:'7.5~100',
+                    leval2:'6~7.5',
+                    leval3:'5~6',
+                    leval4:'3~5',
+                    leval5:'2~3'
+                },
+                {
+                    name:'总磷',
+                    leval1:'0~0.02',
+                    leval2:'0.02~0.1',
+                    leval3:'0.1~0.2',
+                    leval4:'0.2~0.3',
+                    leval5:'0.3~0.4'
+                },
+                {
+                    name:'高锰酸盐指数',
+                    leval1:'0~2',
+                    leval2:'2~4',
+                    leval3:'4~6',
+                    leval4:'6~10',
+                    leval5:'10~15'
+                },
+                {
+                    name:'氨氮',
+                    leval1:'0~0.15',
+                    leval2:'0.15~0.5',
+                    leval3:'0.5~1.0',
+                    leval4:'1.0~1.5',
+                    leval5:'1.5~2.0'
+                }
             ]
         },
         methods:{
@@ -113,8 +190,9 @@
     });
 
     $('#myModal').on('show.bs.modal', function (event) {
-        var div = $(event.relatedTarget) // Button that triggered the modal
-        var title = div.html().trim();
+        /*var div = $(event.relatedTarget) // Button that triggered the modal
+        var title = div.html().trim();*/
+        var title =  $("#title").text();
         //根据title查询近七天数据
         myChart = echarts.init(document.getElementById('mainChart'));
         Promise.resolve(
@@ -244,6 +322,11 @@
             }
         ]
     };
+</script>
+<script>
+    function showModal(id){
+        $("#"+id).click();
+    }
 </script>
 </body>
 </html>

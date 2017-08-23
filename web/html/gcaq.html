@@ -84,7 +84,7 @@
 <script type="text/javascript">
     $("#treeDiv").load("component/tree.html",function(){
         Promise.resolve(loadTree("json/tree.json",function(node){
-            console.log(node);
+            util.showWaiting();
             $.ajax({
     			url: "gcaqController/query.mvc",
     			async: true,
@@ -95,8 +95,8 @@
                     fgps:node.id
                 }
     		}).success(function(data){
-                console.log(data);
                 app.datas = data;
+                util.hideWaiting();
     		});
             
         })).then(function(){
@@ -113,268 +113,24 @@
                         name:'位移计',
                         code:'wyj',
                         itemData:[
-                            {
-                                name:'位移计A',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'位移计B',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'位移计C',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'位移计D',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'位移计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'位移计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'位移计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'位移计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'位移计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'位移计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            }
                         ]
                     },
                     {
                         name:'测缝计',
                         code:'cfj',
                         itemData:[
-                            {
-                                name:'渗压计A',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'侧缝计B',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'侧缝计C',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'侧缝计D',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'侧缝计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'侧缝计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'侧缝计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'侧缝计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'侧缝计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'侧缝计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            }
                         ]
                     },
                     {
                         name:'土压力计',
                         code:'tylj',
                         itemData:[
-                            {
-                                name:'土压力计A',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'土压力计B',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'土压力计C',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'土压力计D',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'土压力计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'土压力计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'土压力计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'土压力计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'土压力计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'土压力计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            }
                         ]
                     },
                     {
                         name:'渗压计',
                         code:'syj',
                         itemData:[
-                            {
-                                name:'渗压计A',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'渗压计B',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'渗压计C',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'渗压计D',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'渗压计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'渗压计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'渗压计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'渗压计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'渗压计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            },{
-                                name:'渗压计E',
-                                time:new Date().toLocaleString(),
-                                valuex:'12',
-                                valuey:'12',
-                                valuez:'12'
-                            }
                         ]
                     }
                 ]

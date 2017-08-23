@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>工作台（工程）</title>
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-theme.css" rel="stylesheet">
+    <link href="css/docs.css" rel="stylesheet">
+    <script src="js/jquery-1.11.2.min.js" ></script>
+    <script src="js/bootstrap.js" ></script>
+    <script src="js/vue.js" ></script>
+    <script src="js/echarts.min.js"></script>
+</head>
+<meta charset="UTF-8">
+<title>工作台（工程）</title>
+<style>
+    .div-height-2{
+        height: calc((100vh - 130px) / 2);
+        /*overflow-y: scroll;*/
+    }
+    @media (min-height: 1080px) {
+
+    }
+    .col-lg-5 {
+        width: 38%;
+    }
+    .col-lg-2{
+        width: 24%;
+    }
+    #div-gcaq{
+        margin-right: 0px;
+        margin-left: 0px;
+    }
+
+</style>
+<script type="text/x-template" id="pagePanelTemplate">
+    <div>
+        <div class="panel panel-primary" style="margin-bottom: 15px;">
+            <div class="panel-heading">
+                {{data.name}}
+            </div>
+            <div class="div-height-2">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>仪器名称</th>
+                        <th>数据时间</th>
+                        <th>{{getColXName(data.code)}}</th>
+                        <th>{{getColYName(data.code)}}</th>
+                        <th>{{getColZName(data.code)}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(item, index) in data.itemData">
+                        <td>{{++index}}</td>
+                        <td>{{item.name}}</td>
+                        <td>{{item.time}}</td>
+                        <td>{{item.valuex}}</td>
+                        <td>{{item.valuey}}</td>
+                        <td>{{item.valuez}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</script>
+</head>
+<body>
+<div id="div-gcaq" class="row">
+    <div class="col-lg-2 col-sm-6 col-xs-12" style="height: 100vh">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                报警信息
+            </div>
+            <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>仪器名称</th>
+                    <th>报警信息</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(data, index) in warinData">
+                    <td>{{++index}}</td>
+                    <td>{{data.name}}</td>
+                    <td>{{data.warnInfo}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    <div class="col-lg-5 col-sm-6 col-xs-12" v-for="data in datas" style="padding-left: 0px">
+        <panelPages v-bind:data="data">
+        </panelPages>
+    </div>
+</div>
+<input type="text" class="form-control hidden" id="text">
+<button type="button" class="btn btn-default hidden" id="btn" onclick="btnClick($('#text').val())">button</button>
+<script type="text/javascript">
+    let app = new Vue({
+        el:'#div-gcaq',
+        data:{
+            datas:[
+                {
+                    name:'位移计',
+                    code:'wyj',
+                    itemData:[
+                    ]
+                },
+                {
+                    name:'测缝计',
+                    code:'cfj',
+                    itemData:[
+                    ]
+                },
+                {
+                    name:'土压力计',
+                    code:'tylj',
+                    itemData:[
+                    ]
+                },
+                {
+                    name:'渗压计',
+                    code:'syj',
+                    itemData:[
+                    ]
+                }
+            ],
+            warinData:[
+                {
+                    name:'位移计A',
+                    warnInfo:'报警什么描述'
+                },{
+                    name:'位移计B',
+                    warnInfo:'报警什么描述'
+                },{
+                    name:'位移计C',
+                    warnInfo:'报警什么描述'
+                },{
+                    name:'位移计D',
+                    warnInfo:'报警什么描述'
+                },{
+                    name:'位移计E',
+                    warnInfo:'报警什么描述'
+                },{
+                    name:'位移计F',
+                    warnInfo:'报警什么描述'
+                },{
+                    name:'位移计G',
+                    warnInfo:'报警什么描述'
+                },{
+                    name:'位移计H',
+                    warnInfo:'报警什么描述'
+                },{
+                    name:'位移计I',
+                    warnInfo:'报警什么描述'
+                },{
+                    name:'位移计J',
+                    warnInfo:'报警什么描述'
+                }
+            ]
+        },
+        components:{
+            'panelpages':{
+                template: '#pagePanelTemplate',
+                props:['data'],
+                methods:{
+                    getColXName:function(val){
+                        let xname = "";
+                        switch(val){
+                            case "wyj":
+                                xname = "x向(㎜)";
+                                break;
+                            default:
+                                xname = "频率(KHz²)";
+                        }
+                        return xname;
+                    },
+                    getColYName:function(val){
+                        let yname = "";
+                        switch(val){
+                            case "wyj":
+                                yname = "y向(㎜)";
+                                break;
+                            default:
+                                yname = "温度(℃)";
+                        }
+                        return yname;
+                    },
+                    getColZName:function(val){
+                        let zname = "";
+                        switch(val){
+                            case "wyj":
+                                zname = "z向(㎜)";
+                                break;
+                            case "cfj":
+                                zname = "变形量(㎜)";
+                                break;
+                            case "tylj":
+                                zname = "土压力量(Kpa)";
+                                break;
+                            case "syj":
+                                zname = "水压力量(Kpa)";
+                                break;
+                        }
+                        return zname;
+                    }
+                }
+            }
+        }
+    });
+    function btnClick(nodeid){
+        $.ajax({
+            url: "gcaqController/query.mvc",
+            async: true,
+            type: "get",
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            data : {
+                fgps:nodeid
+            }
+        }).success(function(data){
+            app.datas = data;
+        });
+    }
+</script>
+</body>
+</html>

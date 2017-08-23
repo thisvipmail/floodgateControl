@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <script src="dhVideo/My97DatePicker/WdatePicker.js"></script>
+
+    <title>实时视频</title>
+    <link rel="stylesheet" type="text/css" href="dhVideo/css/DSSPlay.css"/>
+    <script src="dhVideo/js/ocxfun.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/jquery-1.11.2.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <script src="js/xmlUtil.js"></script>
+    <script src="dhVideo/js/tree.js"></script>
+
+    <style type="text/css">
+        .panel-group .panel+.panel{
+            margin-top:0px;
+        }
+        .panel.panel-default {
+            border-top: 0px;
+        }
+        .panel-body{
+            padding-bottom:0px;	padding-top:0px;
+        }
+        .panel-body-padding{
+            padding: 5px;
+        }
+
+    </style>
+
+    <script language="javascript" for="DPSDK_OCX" event="OnAsyncLoadDGroupInfoComplete(nRet, nGroupLen)">
+        var obj = document.getElementById("DPSDK_OCX");
+        var groupStr = obj.DPSDK_GetDGroupStr();
+        var treeStr = createTree(groupStr);
+        document.getElementById("orgDiv").innerHTML = treeStr;
+    </script>
+
+</head>
+<body style="overflow: hidden" onload="init('lvhongyong')" onunload="ButtonLogout_onclick()">
+
+<div class="col-md-10 div-full-height" style="padding: 0px">
+
+    <object id="DPSDK_OCX" classid="CLSID:D3E383B6-765D-448D-9476-DFD8B499926D"
+            style="width: 100%; height: 100%" codebase="DpsdkOcx.cab#version=1.0.0.0"></object>
+</div>
+<div class="col-md-2 div-full-height" style="padding: 0px">
+    <div id="orgDiv" style="height: 80%;overflow-y: scroll">
+        正在加载组织机构，请耐心等待...
+    </div>
+    <div style="background-color: #f0f8ff;height: 20%">
+        <input type="text" class="form-control" id="text">
+        <button type="button" class="btn btn-default" id="btn" onclick="showPlay($('#text').val())">button</button>
+        <p style="padding-top: 10px">
+            <span>设置窗口数量：</span>
+            <select id="textWndNum">
+                <option value="1">1</option>
+                <option value="4" selected>4</option>
+                <option value="8">8</option>
+                <option value="16">16</option>
+            </select>
+            <input type="button" id="buttonLogin" value="设置" class="button" onclick="return ButtonCreateWnd_onclick()"/>
+        </p>
+        <hr style="margin-top: 0px;margin-bottom: 0px;border-color: #000"/>
+        <p>录像回放：</p>
+        <p>开始时间：
+            <input id="textStartTime" type="text" name="" value='2017-01-16 08:00:00'
+                   onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',startDate:'%y-%M-%d 00:00:00',maxDate:'%y-%M-%d',minDate:'1970-01-01 10:00:00'})"
+                   class="select-text" style="padding: 0 5px;" readonly/>
+        </p>
+        <P>结束时间：
+            <input id="textEndTime" type="text" name="" value='2017-01-17 23:59:59'
+                   onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',minDate:'1970-01-01 10:00:00'})"
+                   class="select-text" style="padding: 0 5px;" readonly/>
+        </P>
+        <P>
+            <input type="button" id="buttonStartTimePlaybackByWndNo" value="回放"
+                   onclick="return ButtonStartTimePlaybackByWndNo_onclick()"/>
+            <input type="button" id="buttonPausePlaybackByWndNo" value="暂停回放"
+                   onclick="return ButtonPausePlaybackByWndNo_onclick()"/>
+            <input type="button" id="buttonResumePlaybackByWndNo" value="继续回放"
+                   onclick="return ButtonResumePlaybackByWndNo_onclick()"/>
+            <input type="button" id="buttonStopPlaybackByWndNo" value="停止回放"
+                   onclick="return ButtonStopPlaybackByWndNo_onclick()"/>
+        </P>
+
+    </div>
+</div>
+</body>
+</html>

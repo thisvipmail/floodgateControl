@@ -1,16 +1,16 @@
 package com.thtf.wtlv.entity;
 
 public enum LevelConvert {
-	LevelA("¢ñ", 'A'), LevelB("¢ò", 'B'), LevelC("¢ó", 'C'), LevelD("¢õ", 'D'), LevelE("¢ô", 'E');  
-    // ³ÉÔ±±äÁ¿  
+	LevelA("â… ", 'A'), LevelB("â…¡", 'B'), LevelC("â…¢", 'C'), LevelD("â…¤", 'D'), LevelE("â…£", 'E');  
+    // æˆå‘˜å˜é‡  
     private String name;  
     private int code;  
-    // ¹¹Ôì·½·¨  
+    // æ„é€ æ–¹æ³•  
     private LevelConvert(String name, int code) {  
         this.name = name;  
         this.code = code;  
     }  
-    // ÆÕÍ¨·½·¨  
+    // æ™®é€šæ–¹æ³•  
     public static String getName(int index) {  
         for (LevelConvert c : LevelConvert.values()) {  
             if (c.getCode() == index) {  
@@ -19,7 +19,7 @@ public enum LevelConvert {
         }  
         return null;  
     }  
-    // get set ·½·¨  
+    // get set æ–¹æ³•  
     public String getName() {  
         return name;  
     }  

@@ -33,7 +33,7 @@ public class DirectServiceImpl<T> extends BaseServiceImpl<T> implements DirectSe
 	@Transactional
 	public List<T> query(Map<String, Object> params,Class<T> cls, int start, int size) {
 		String queryString = "select instructCode,STATIONNAME conCode,conModel,conValue ,brakeDegree,befLevel,aftLevel,staTime,endTime,dbTime,dddyid ssqd,state from ("
-				+ "select INSTRUCT_CODE instructCode ,CON_CODE conCode,CON_MODEL conModel,CON_VALUE conValue,BRAKE_DEGREE brakeDegree,"
+				+ "select CON_CODE instructCode ,CON_CODE conCode,CON_MODEL conModel,CON_VALUE conValue,BRAKE_DEGREE brakeDegree,"
 				+ "BEF_LEVEL befLevel,AFT_LEVEL aftLevel,STA_TIME staTime,END_TIME endTime,DB_TIME dbTime,STATE from "
 				+ "(select ROW_NUMBER()over(partition by con_code order by db_time desc),INSTRUCT_CODE,CON_CODE,CON_MODEL,CON_VALUE,"
 				+ "BRAKE_DEGREE,BEF_LEVEL,AFT_LEVEL,STA_TIME,END_TIME,DB_TIME, CASE WHEN STA_TIME - CURRENT DATE > 0 THEN '0' ELSE '1' END STATE from AZ_SLDD_INSTRUCT) where rownum = 1 or END_TIME > current date)"
