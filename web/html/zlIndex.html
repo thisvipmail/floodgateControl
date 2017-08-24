@@ -203,7 +203,19 @@
                                 closeOnConfirm: false
                             },
                             function () {
-                                swal("急停成功====等待接入系统", "", "success");
+                                $.ajax({
+                                    url: "mosaicController/stopDriect.mvc",
+                                    async: true,
+                                    type: "get",
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: 'json',
+                                    data: {
+                                        "abc":123.23,
+                                        "acd":3.3,
+                                    }
+                                }).complete(function(){
+                                    swal("急停成功====等待接入系统", "", "success");
+                                });
                             }
                     );
                 },
@@ -283,23 +295,26 @@
         });
 		//定时刷新时间获取可执行指令
         setInterval(function () {
+            let json = {};
         	itemsData.forEach(function(item, index){
                 if(item.staTime > new Date().getTime() && item.staTime - new Date().getTime()<=60000){
                     swal("该指令可以发给闸控系统去执行了");
+                    json[item.instructCode] = item.conValue
                 }
+            });
+            $.ajax({
+                url: "mosaicController/sendDriect.mvc",
+                async: true,
+                type: "get",
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                data : json
             });
         },1000*60);
         util.hideWaiting();
     });
 
-    Promise.resolve(
-            $.ajax({
-                url: "json/flowKind.json",
-                type: "get",
-                async: false,
-                dataType: 'json'
-            })
-    );
+
 </script>
 </body>
 </html>
