@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.Session;
 import org.hibernate.type.Type;
 
 public interface BaseDao<T> {
@@ -41,6 +42,9 @@ public interface BaseDao<T> {
 	 * @param baseEntity
 	 */
 	public void saveOrUpdate(T baseEntity);
+	
+	
+	public Session getCurrentSession();
 	
 	/**
 	 * 原生sql查询
@@ -113,5 +117,13 @@ public interface BaseDao<T> {
 	 * @return
 	 */
 	public int executeUpdate(String hql, Map<String, Object> params, int type);
+
+	/**
+	 * 根据ID查询
+	 * @param queryStr
+	 * @param params
+	 * @return
+	 */
+	public List<T> queryByIds(String queryStr, List<String> params);
 
 }

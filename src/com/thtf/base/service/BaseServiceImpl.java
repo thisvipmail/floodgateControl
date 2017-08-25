@@ -47,6 +47,11 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 		this.getBaseDao().saveOrUpdate(baseEntity);
 	}
 
+	@Override
+	public List<T> queryByIds(String queryStr ,List<String> params) {
+		return this.getBaseDao().queryByIds(queryStr, params);
+	}
+	
 	public abstract BaseDao<T> getBaseDao();
 
 	@Override

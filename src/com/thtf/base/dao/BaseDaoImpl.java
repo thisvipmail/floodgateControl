@@ -76,6 +76,11 @@ public class BaseDaoImpl<T> extends HibernateDaoSupport implements BaseDao<T> {
 	}
 	
 	@Override
+	public Session getCurrentSession() {
+		return this.getSessionFactory().getCurrentSession();
+	}
+	
+	@Override
 	public int executeUpdate(String hql,Map<String, Object> params,int type){
 		
 		Session session = this.getSessionFactory().getCurrentSession();
@@ -222,6 +227,17 @@ public class BaseDaoImpl<T> extends HibernateDaoSupport implements BaseDao<T> {
 			}
 		}
 		return (Integer) query.uniqueResult();
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<T> queryByIds(String queryStr, List<String> params) {
+		Query query = this.getCurrentSession().createQuery(queryStr);
+		
+		query.setParameterList("ids", params);
+		
+		return query.list();
 	}
 
 }

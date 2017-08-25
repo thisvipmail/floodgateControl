@@ -16,11 +16,12 @@ public class MosaicDriverFactory implements Serializable {
 	 */
 	private static final long serialVersionUID = 345344341L;
 
-	private static MswebserviceStub stub=null;
+	private MswebserviceStub stub=null;
 	private static String  wsdlPath="http://172.16.2.18:9900/";
 	private static String userId = "0";
 
 	public MosaicDriverFactory() {
+		System.out.println("stub======================"+stub);
 		init();
 	}
 	public MosaicDriverFactory(String wsdlPath) {
@@ -272,11 +273,11 @@ public class MosaicDriverFactory implements Serializable {
 	public static void setUserId(String userId) {
 		MosaicDriverFactory.userId = userId;
 	}
-	public static MswebserviceStub getStub() {
+	public MswebserviceStub getStub() {
 		return stub;
 	}
-	public static void setStub(MswebserviceStub stub) {
-		MosaicDriverFactory.stub = stub;
+	public void setStub(MswebserviceStub stub) {
+		this.stub = stub;
 	}
 	public static String getWsdlPath() {
 		return wsdlPath;

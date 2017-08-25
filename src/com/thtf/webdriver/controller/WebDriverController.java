@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.thtf.direct.entity.DirectEntity;
+import com.thtf.direct.service.DirectService;
 import com.thtf.util.IPUtil;
 import com.thtf.util.StringUtil;
 import com.thtf.webdriver.entity.IDEntity;
@@ -33,6 +35,9 @@ public class WebDriverController {
 	
 	@Resource(name="webDriverService")
 	private WebDriverService<IPEntity> ipWebDriverService;
+	
+	@Resource(name="directService")
+	private DirectService<DirectEntity> directService;
 
 	@RequestMapping(value = "/send", method = RequestMethod.POST)
 	@ResponseBody
@@ -79,7 +84,11 @@ public class WebDriverController {
 	
 	@RequestMapping(value = "/nvgt", method = RequestMethod.GET)
 	@ResponseBody
-	public void nvgtUrl(@RequestParam(value = "fgps", required = true) final String fgps) {
+	public void nvgtUrl(@RequestParam(value = "directId", required = true) final String directId) {
+		
+		//根据指令ID查询fgps
+		DirectEntity directEntity = directService.get(DirectEntity.class, directId);
+		String fgps = directEntity.getConCode();
 		
 		String localIp = IPUtil.getIp();
 		

@@ -43,6 +43,13 @@ public interface BaseService<T> {
 	public void saveOrUpdate(T baseEntity);
 	
 	/**
+	 * 根据ID查询
+	 * @param params
+	 * @return
+	 */
+	public List<T> queryByIds(String queryStr ,List<String> params);
+	
+	/**
 	 * 原生sql查询
 	 * @param queryString
 	 * @param params

@@ -28,7 +28,7 @@ public class IEDriverUtil {
 			driver = new InternetExplorerDriver(capability);
 		}else{
 			try {
-				driver.getCurrentUrl();
+				driver.close();
 			} catch (Exception e) {
 			}finally{
 				driver = new InternetExplorerDriver(capability);

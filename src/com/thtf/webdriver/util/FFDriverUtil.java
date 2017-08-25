@@ -20,7 +20,7 @@ public class FFDriverUtil {
 			driver = new FirefoxDriver();
 		}else{
 			try {
-				driver.getCurrentUrl();
+				driver.close();
 			} catch (Exception e) {
 			}finally{
 				driver = new FirefoxDriver();
