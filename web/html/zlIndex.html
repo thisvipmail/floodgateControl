@@ -302,14 +302,16 @@
                     json[item.instructCode] = item.conValue
                 }
             });
-            $.ajax({
-                url: "mosaicController/sendDriect.mvc",
-                async: true,
-                type: "get",
-                contentType: "application/json; charset=utf-8",
-                dataType: 'json',
-                data : json
-            });
+            if(!$.isEmptyObject(json)){
+                $.ajax({
+                    url: "mosaicController/sendDriect.mvc",
+                    async: true,
+                    type: "get",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: 'json',
+                    data : json
+                });
+            }
         },1000*60);
         util.hideWaiting();
     });

@@ -18,6 +18,13 @@ public class FFDriverUtil {
 		// 定义驱动对象为 FirefoxDriver 对象
 		if(driver == null){
 			driver = new FirefoxDriver();
+		}else{
+			try {
+				driver.getCurrentUrl();
+			} catch (Exception e) {
+			}finally{
+				driver = new FirefoxDriver();
+			}
 		}
 
         //浏览器窗口变大
@@ -34,12 +41,13 @@ public class FFDriverUtil {
 		// 定义驱动对象为 FirefoxDriver 对象
 		if(driver == null){
 			driver = new FirefoxDriver();
-		}
-
-		try {
-			driver.getCurrentUrl();
-		} catch (Exception e) {
-			driver = new FirefoxDriver();
+		}else{
+			try {
+				driver.getCurrentUrl();
+			} catch (Exception e) {
+			}finally{
+				driver = new FirefoxDriver();
+			}
 		}
 		
         //浏览器窗口变大

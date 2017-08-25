@@ -48,7 +48,7 @@ public class MosaicController extends BaseController{
 	 * @param attr
 	 * @param value
 	 */
-	@RequestMapping(value = "/sendDriect")
+	@RequestMapping(value = "/updateDriect")
 	@ResponseBody
 	public void updateDriect(@RequestParam Map<String,String> map){
 		
