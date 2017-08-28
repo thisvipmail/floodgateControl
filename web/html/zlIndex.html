@@ -106,8 +106,8 @@
                             </thead>
                             <tbody>
                             <tr v-for="(data,index) in items" v-if="Math.floor(index/22)===page-1" v-bind:style="bgSuccess(data)">
-                                <td>{{++index}}</td>
-                                <td>{{data.conCode}}</td>
+                                <td>{{++index}}==={{data.conCode}}</td>
+                                <td>{{data.name}}</td>
                                 <td>{{data.type==='01'?"流量":"开度"}}</td>
                                 <td>{{data.conValue}}</td>
                                 <td>{{data.befLevel}} / {{data.aftLevel}}</td>
@@ -163,10 +163,10 @@
         var object = getData.next();
         resolve(object.value);
     });
-
+    let app;
     promise.then(function (data) {
         let itemsData = data;
-        let app = new Vue({
+         app = new Vue({
             el:'#div-zl',
             data:{
                 page:1,
@@ -322,8 +322,59 @@
             }
         },1000*60);
         util.hideWaiting();
+
+        //通过websocket获取新数据
+        let websocket = new websocketClass();
     });
 
+
+    let websocketClass = function(){
+        let ws = new WebSocket('ws://' + window.location.host + '/floodgateControl/websocket.mvc?type=zl');
+        ws.onopen = function () {
+            console.log('Info: connection opened.');
+        };
+        ws.onmessage = function (event) {
+            console.log('Received: ' + event.data);
+            //组合json
+            let json_ = {};
+            JSON.parse(event.data).forEach(function(item,index){
+                item.staTime = new Date(item.staTime).getTime();
+                item.endTime = new Date(item.endTime).getTime();
+                json_[item.conCode] = item;
+            });
+            if(app){
+                let items = JSON.parse(JSON.stringify(app.items));
+                let i = 0;
+                items.forEach(function(item, index){
+                    if(json_[item.conCode]){
+                        //如果更新数据，根据开始时间、结束时间判断
+                        //1、如果开始时间在原指令的开始时间,则替换原指令;在结束时间之前，则根据当前时间判断
+                        //2、如果开始时间在原指令的结束时间之后，则根据当前时间执行，若当前时间
+                        //1）如果当前时间>原指令的结束时间，则替换
+                        //2）如果当前时间<原指令的结束时间，则增加指令
+                        json_[item.conCode].name = item.name;
+                        debugger;
+                        if(json_[item.conCode].staTime < item.staTime || new Date().getTime() > item.endTime){
+                            app.items.splice(index,1,json_[item.conCode]);
+                        }else{
+                            app.items.splice(index+i,0,json_[item.conCode]);
+                            i++;
+                        }
+                    }
+                });
+            }
+        };
+        ws.onclose = function (event) {
+            console.log('Info: connection closed.');
+            console.log(event);
+        };
+        this.close = function(){
+            if (ws != null) {
+                ws.close();
+                ws = null;
+            }
+        }
+    }
 
 </script>
 </body>

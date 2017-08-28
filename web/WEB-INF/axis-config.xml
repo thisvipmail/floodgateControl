@@ -8,5 +8,12 @@
 		class="org.apache.axis2.extensions.spring.receivers.ApplicationContextHolder" />
 	
 	 	<bean id="webServiceDemo" class="com.thtf.websvc.WebServiceDemo" />
-	
+	 	
+	 	<bean id="thtfWebSocketHandler" class="com.thtf.websocket.ThtfWebSocketHandler" />
+	 	
+	 	<bean id="webServiceDirect" class="com.thtf.websvc.WebServiceDirect" >
+	 		<property name="handler" ref="thtfWebSocketHandler">
+		</property>
+	 	</bean>
+	 	
 </beans>

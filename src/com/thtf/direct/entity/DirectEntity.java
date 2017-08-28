@@ -27,6 +27,12 @@ public class DirectEntity {
 	private String conCode;
 	
 	/**
+	 * 名称
+	 */
+	@Transient
+	private String name;
+	
+	/**
 	 * 控制类型（闸：01代表目标流量模式 02代表闸门开度模式 泵站：01代表控制流量模式 02代表控制水量模式）
 	 */
 	@Column(name="CON_MODEL",columnDefinition="char(2)")
@@ -171,6 +177,14 @@ public class DirectEntity {
 
 	public void setState(int state) {
 		this.state = state;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 

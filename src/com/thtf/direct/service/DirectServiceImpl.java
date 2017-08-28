@@ -32,7 +32,7 @@ public class DirectServiceImpl<T> extends BaseServiceImpl<T> implements DirectSe
 	@Override
 	@Transactional
 	public List<T> query(Map<String, Object> params,Class<T> cls, int start, int size) {
-		String queryString = "select instructCode,STATIONNAME conCode,conModel,conValue ,brakeDegree,befLevel,aftLevel,staTime,endTime,dbTime,dddyid ssqd,state from ("
+		String queryString = "select instructCode,conCode conCode, STATIONNAME name,conModel,conValue ,brakeDegree,befLevel,aftLevel,staTime,endTime,dbTime,dddyid ssqd,state from ("
 				+ "select INSTRUCT_CODE instructCode ,CON_CODE conCode,CON_MODEL conModel,CON_VALUE conValue,BRAKE_DEGREE brakeDegree,"
 				+ "BEF_LEVEL befLevel,AFT_LEVEL aftLevel,STA_TIME staTime,END_TIME endTime,DB_TIME dbTime,STATE from "
 				+ "(select ROW_NUMBER()over(partition by con_code order by db_time desc),INSTRUCT_CODE,CON_CODE,CON_MODEL,CON_VALUE,"
@@ -41,6 +41,7 @@ public class DirectServiceImpl<T> extends BaseServiceImpl<T> implements DirectSe
 		
 		Map<String,Type> scalarMap = new HashMap<String,Type>();
 		scalarMap.put("instructCode", StringType.INSTANCE);
+		scalarMap.put("name", StringType.INSTANCE);
 		scalarMap.put("conCode", StringType.INSTANCE);
 		scalarMap.put("conModel", StringType.INSTANCE);
 		scalarMap.put("conValue", FloatType.INSTANCE);
