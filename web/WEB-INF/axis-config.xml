@@ -11,9 +11,6 @@
 	 	
 	 	<bean id="thtfWebSocketHandler" class="com.thtf.websocket.ThtfWebSocketHandler" />
 	 	
-	 	<bean id="webServiceDirect" class="com.thtf.websvc.WebServiceDirect" >
-	 		<property name="handler" ref="thtfWebSocketHandler">
-		</property>
-	 	</bean>
+	 	<bean id="webServiceDirect" class="com.thtf.websvc.WebServiceDirect" />
 	 	
 </beans>

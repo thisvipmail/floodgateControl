@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>工作台（工程）</title>
+    <style>
+        .div-height{
+            height: calc(100vh - 110px - 45px);
+            padding: 0px;
+            overflow-y: scroll;
+            overflow-x: hidden;
+        }
+        @media (min-height: 1080px) {
+
+        }
+        .col-lg-10 {
+            width: 80%;
+        }
+        .col-lg-2{
+            width: 20%;
+        }
+    </style>
+</head>
+<body>
+    <div id="div-gcaq" class="row">
+        <div class="col-lg-2 visible-lg" style="padding-right: 0px">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    查询选择树
+                </div>
+                <div id="treeDiv" class="panel-body div-height">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-10 col-sm-6 col-xs-12 div-height" style="padding-left: 0px;overflow-y: hidden">
+            <div id="container" style="width: 100%;height: 100%">
+
+            </div>
+        </div>
+    </div>
+<script type="text/javascript">
+    $("#treeDiv").load("component/tree.html",function(){
+        Promise.resolve(loadTree("json/tree.json",function(node){
+            util.showWaiting();
+            let chart = null;
+            Promise.resolve($.ajax({
+    			url: "smltController/querySmlt.mvc",//根据闸站ID查询仿真全部数据
+    			async: true,
+    			type: "get",
+    			contentType: "application/json; charset=utf-8",    
+    			dataType: 'json',
+    			data : {
+                    fgps:node.id
+                }
+    		})).then(function(data){
+                chart = new showCharts(data);
+                return Promise.resolve($.ajax({
+                    url: "smltController/queryHistoryData.mvc",//根据闸站ID查询历史实时数据
+                    async: true,
+                    type: "get",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: 'json',
+                    data : {
+                        fgps:node.id
+                    }
+                }))
+            }).then(function(data) {
+                util.hideWaiting();
+                //增加实时数据
+                chart.historyData(data);
+
+                setInterval(function(){
+                    $.ajax({
+                        url: "smltController/queryRealData.mvc",//根据闸站ID查询仿真全部和实时数据
+                        async: true,
+                        type: "get",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: 'json',
+                        data: {
+                            fgps: node.id
+                        }
+                    }).success(function(data){
+                        chart.realData(data);
+                    })
+                },5*60*1000);
+            })
+        }))
+    });
+
+    let dom = document.getElementById("container");
+    let showCharts = function(data){
+        this.myChart = echarts.init(dom);
+        let xAxisData = [],data1 = [],data2 = [],data3 = [],data4 = [],data5 = [],data6 = [];
+
+        for (let i = 1; i < data.length; i++) {
+            xAxisData.push(data[i].beginTime.substr(11,5));
+            data2.push(data[i].dblFrontZ);
+            data4.push(data[i].dblBackZ);
+            data6.push(data[i].dblq);
+        }
+        this.historyData = function(historyData){
+            for (let i = 1; i < historyData.length; i++) {
+                this.option.series[0].data.push(historyData[i].sysw);
+                this.option.series[2].data.push(historyData[i].xysw);
+                this.option.series[4].data.push(historyData[i].flowvalue);
+            }
+            this.myChart.setOption(this.option);
+        };
+        this.realData = function(realData){
+            this.option.series[0].data.push(realData[0].sysw);
+            this.option.series[2].data.push(realData[0].xysw);
+            this.option.series[4].data.push(realData[0].flowvalue);
+            this.myChart.setOption(this.option);
+        };
+        this.option = {
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data:['上游水位','仿真上游水位','下游水位','仿真下游水位','流量','仿真流量'],
+                align: 'left',
+                left: 100
+            },
+            grid: {
+                left: 20,
+                right: 20,
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    data: xAxisData
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    name: '水位',
+                    min : 30,
+                    max : 40,
+                    axisLabel: {
+                        formatter: '{value} m'
+                    }
+                },
+                {
+                    type: 'value',
+                    name: '流量',
+                    axisLabel: {
+                        formatter: '{value} m³/s'
+                    }
+                }
+            ],
+            series: [
+                {
+                    name:'上游水位',
+                    type:'line',
+                    data:data1
+                },
+                {
+                    name:'仿真上游水位',
+                    type:'line',
+                    data:data2
+                },
+                {
+                    name:'下游水位',
+                    type:'line',
+                    data:data3
+                },
+                {
+                    name:'仿真下游水位',
+                    stack: '下游水位',
+                    type:'line',
+                    data:data4
+                },
+                {
+                    name:'流量',
+                    type:'line',
+                    yAxisIndex: 1,
+                    data:data5
+                },
+                {
+                    name:'仿真流量',
+                    type:'line',
+                    yAxisIndex: 1,
+                    data:data6
+                }
+            ]
+        };
+        this.myChart.setOption(this.option);
+    }
+</script>
+</body>
+</html>

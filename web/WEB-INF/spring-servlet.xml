@@ -39,8 +39,6 @@
 		</property>
 	</bean>
 
-	<context:annotation-config />
-
 	<!-- 配置静态资源：default-servlet-handler将在SpringMVC上下文中定义DefaultServletHttpRequestHandler, 
 		它会对进入DispatcherServlet的请求进行帅选，如果发现是没有经过映射的请求，就将该请求交由WEB应用服务器默认的 Servlet处理。 
 		如果不是静态资源的请求，才由DispatcherServlet继续处理。 -->
@@ -48,14 +46,6 @@
 	<!-- 配置开启注解 -->
 	<mvc:annotation-driven />
 
-	<context:component-scan base-package="com.thtf" />
-	<!-- <context:component-scan base-package="com.thtf"
-		use-default-filters="false">
-		<context:include-filter type="annotation"
-			expression="org.springframework.stereotype.Controller" />
-	</context:component-scan> -->
-
-	<tx:annotation-driven transaction-manager="transactionManager" />
 	<!-- <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"></bean> 
 		<bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter"></bean> -->
 

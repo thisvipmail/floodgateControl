@@ -62,6 +62,8 @@ public class RPCClientDirect {
 		de.setStaTime(new Date());
 		de.setEndTime(new Date());
 		de.setConModel("01");
+		de.setConValue(23.2f);
+		de.setBrakeDegree(55.2f);
 		list.add(de);
 		
 		Gson gson = new Gson();

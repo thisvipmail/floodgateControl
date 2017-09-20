@@ -108,7 +108,12 @@ public class DirectEntity {
 	}
 
 	public float getConValue() {
-		return conValue;
+		if(conCode.startsWith("LRLN") || "01".equals(conModel)){
+			return conValue;
+		}else{
+			return brakeDegree;
+		}
+		
 	}
 
 	public void setConValue(float conValue) {

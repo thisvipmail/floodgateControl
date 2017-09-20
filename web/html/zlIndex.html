@@ -106,9 +106,9 @@
                             </thead>
                             <tbody>
                             <tr v-for="(data,index) in items" v-if="Math.floor(index/22)===page-1" v-bind:style="bgSuccess(data)">
-                                <td>{{++index}}==={{data.conCode}}</td>
+                                <td>{{++index}}</td>
                                 <td>{{data.name}}</td>
-                                <td>{{data.type==='01'?"流量":"开度"}}</td>
+                                <td>{{data.type==='01'?"流量":data.conCode.startsWith("LRLN")?"水量":"开度"}}</td>
                                 <td>{{data.conValue}}</td>
                                 <td>{{data.befLevel}} / {{data.aftLevel}}</td>
                                 <td>{{formatDate(data.staTime)}} —— {{formatDate(data.endTime)}}</td>
@@ -312,7 +312,6 @@
                         param:arr.join(",")
                     }
                 }).complete(function () {
-                    debugger;
                     app.items.forEach(function(item, index){
                         if($.inArray(item.instructCode, arr)!==-1){
                             item.state =  1;
@@ -329,7 +328,7 @@
 
 
     let websocketClass = function(){
-        let ws = new WebSocket('ws://' + window.location.host + '/floodgateControl/websocket.mvc?type=zl');
+        let ws = new ReconnectingWebSocket('ws://' + window.location.host + '/floodgateControl/websocket.mvc?type=zl');
         ws.onopen = function () {
             console.log('Info: connection opened.');
         };
@@ -340,6 +339,7 @@
             JSON.parse(event.data).forEach(function(item,index){
                 item.staTime = new Date(item.staTime).getTime();
                 item.endTime = new Date(item.endTime).getTime();
+                item.conValue = item.conModel === "01"?item.conValue:item.conCode.startsWith("LRLN")?item.conValue:item.brakeDegree;
                 json_[item.conCode] = item;
             });
             if(app){
@@ -353,7 +353,6 @@
                         //1）如果当前时间>原指令的结束时间，则替换
                         //2）如果当前时间<原指令的结束时间，则增加指令
                         json_[item.conCode].name = item.name;
-                        debugger;
                         if(json_[item.conCode].staTime < item.staTime || new Date().getTime() > item.endTime){
                             app.items.splice(index,1,json_[item.conCode]);
                         }else{

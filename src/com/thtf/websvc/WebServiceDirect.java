@@ -1,14 +1,11 @@
 package com.thtf.websvc;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
-import com.google.gson.Gson;
-import com.thtf.direct.entity.DirectEntity;
 import com.thtf.websocket.ThtfWebSocketHandler;
 
 /**
@@ -16,8 +13,10 @@ import com.thtf.websocket.ThtfWebSocketHandler;
  * @author WHOAMI
  *
  */
-public class WebServiceDirect{
+@Component(value="webServiceDirect")
+public class WebServiceDirect implements IWebServiceDirect{
 	
+	@Resource
 	ThtfWebSocketHandler handler;
 
 	/**
@@ -25,6 +24,7 @@ public class WebServiceDirect{
 	 * @param directList
 	 */
 	public void receive(String direct) {
+		System.out.println(direct);
 		try {
 			handler.broadcast("zl", direct);
 		} catch (IOException e) {
