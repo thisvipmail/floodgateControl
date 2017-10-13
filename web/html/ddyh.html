@@ -475,7 +475,7 @@
                 flowKind:flowKind.nodes,
                 actionBox:true,
                 dataSize:5,
-                item: []
+                item: {}
             },
             methods:{
                 submitForm: function () {
@@ -548,7 +548,7 @@
             return selectRowIndex;
         };
         this.clearClickRow = function(){
-            json = [],selectRowIndex = null;
+            json = {},selectRowIndex = null;
             $("#vueDiv > div.div-height.div-height-2 > table > tbody > tr").removeClass("success");
         };
     };

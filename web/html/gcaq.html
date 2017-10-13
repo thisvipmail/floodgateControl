@@ -5,13 +5,13 @@
     <title>工作台（工程）</title>
     <style>
         .div-height{
-            height: calc(100vh - 110px - 45px);
+            height: calc(100vh - 110px - 50px);
             padding: 0px;
             overflow-y: scroll;
             overflow-x: hidden;
         }
         .div-height-2{
-            height: calc((100vh - 110px - 130px) / 2);
+            height: calc((100vh - 110px - 135px) / 2);
             /*overflow-y: scroll;*/
         }
         @media (min-height: 1080px) {
@@ -65,7 +65,7 @@
     </script>
 </head>
 <body>
-    <div id="div-gcaq" class="row">
+    <div id="div-gcaq" class="row" style="margin-top: 5px">
         <div class="col-lg-2 visible-lg" style="padding-right: 0px">
             <div class="panel panel-primary">
                 <div class="panel-heading">
@@ -95,7 +95,7 @@
                     fgps:node.id
                 }
     		}).success(function(data){
-                app.datas = data;
+                gcaqVue.datas = data;
                 util.hideWaiting();
     		});
             
@@ -103,9 +103,9 @@
             initApp();
         });
     });
-	let app = null;
+	let gcaqVue = null;
     let initApp = function(){
-        app = new Vue({
+        gcaqVue = new Vue({
             el:'#div-gcaq',
             data:{
                 datas:[
